@@ -19,3 +19,4 @@ database/*.db
 *.pth
 .venv/
 venv/
+.gitignore

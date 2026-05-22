@@ -1,0 +1,12 @@
+fairness:
+  audit_only: true
+  metrics:
+    - fpr
+    - fnr
+    - demographic_parity
+    - equal_opportunity
+datasets:
+  groups:
+    - gender
+    - age
+    - skin_tone

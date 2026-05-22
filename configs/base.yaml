@@ -1,0 +1,14 @@
+model:
+  backbone: arcface
+  pretrained: true
+  embedding_size: 512
+training:
+  batch_size: 32
+  epochs: 50
+  lr: 1e-4
+fairness:
+  enabled: true
+  audit_groups:
+    - gender
+    - age
+    - skin_tone

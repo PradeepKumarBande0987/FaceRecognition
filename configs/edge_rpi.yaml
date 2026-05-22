@@ -1,0 +1,10 @@
+model:
+  backbone: mobilefacenet
+  quantization: int8
+  input_size: 112
+training:
+  batch_size: 16
+  epochs: 30
+  lr: 5e-5
+deployment:
+  target: raspberry_pi

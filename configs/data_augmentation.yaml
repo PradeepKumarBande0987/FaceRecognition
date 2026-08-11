@@ -1,0 +1,506 @@
+# ============================================
+# Data Augmentation Configuration
+# ============================================
+
+augmentation:
+  enabled: true
+  
+  # Augmentation strength
+  strength: "medium"  # none, light, medium, heavy
+  
+  # Strength-specific settings
+  strength_levels:
+    none:
+      enabled: true
+      probability: 0.0
+    
+    light:
+      enabled: true
+      probability: 0.3
+      
+      transforms:
+        - horizontal_flip: 0.5
+        - random_rotation: 10
+        - brightness: 0.1
+        - contrast: 0.1
+    
+    medium:
+      enabled: true
+      probability: 0.6
+      
+      transforms:
+        - horizontal_flip: 0.5
+        - random_rotation: 15
+        - brightness: 0.2
+        - contrast: 0.2
+        - saturation: 0.2
+        - hue: 0.05
+        - gaussian_blur: 0.3
+        - cutout: 0.3
+    
+    heavy:
+      enabled: true
+      probability: 0.8
+      
+      transforms:
+        - horizontal_flip: 0.5
+        - random_rotation: 30
+        - brightness: 0.3
+        - contrast: 0.3
+        - saturation: 0.3
+        - hue: 0.1
+        - gaussian_blur: 0.5
+        - cutout: 0.5
+        - mixup: 0.3
+        - mosaic: 0.2
+
+# ──────────────────────────────────────
+# SPATIAL AUGMENTATIONS
+# ──────────────────────────────────────
+
+spatial:
+  # Horizontal flip
+  horizontal_flip:
+    enabled: true
+    probability: 0.5
+  
+  # Vertical flip (rare for faces)
+  vertical_flip:
+    enabled: false
+    probability: 0.1
+  
+  # Rotation
+  random_rotation:
+    enabled: true
+    angle_range: [-15, 15]  # degrees
+    probability: 0.5
+    
+    # Rotation settings
+    fill_color: [128, 128, 128]  # RGB
+    expand: false
+  
+  # Perspective transforms
+  perspective_transform:
+    enabled: false
+    distortion_scale: 0.2
+    probability: 0.3
+  
+  # Affine transforms
+  affine:
+    enabled: true
+    probability: 0.3
+    
+    # Random affine
+    shear_degrees: 10
+    scale: [0.9, 1.1]
+  
+  # Elastic deformation
+  elastic_deform:
+    enabled: false
+    alpha: [30.0, 40.0]
+    sigma: [3.0, 4.0]
+    probability: 0.2
+
+# ──────────────────────────────────────
+# COLOR AUGMENTATIONS
+# ──────────────────────────────────────
+
+color:
+  # Brightness
+  brightness:
+    enabled: true
+    factor: [0.8, 1.2]
+    probability: 0.5
+  
+  # Contrast
+  contrast:
+    enabled: true
+    factor: [0.8, 1.2]
+    probability: 0.5
+  
+  # Saturation
+  saturation:
+    enabled: true
+    factor: [0.8, 1.2]
+    probability: 0.4
+  
+  # Hue
+  hue:
+    enabled: true
+    factor: [-0.05, 0.05]
+    probability: 0.2
+  
+  # Color jitter (combined)
+  color_jitter:
+    enabled: true
+    probability: 0.4
+    
+    brightness_factor: 0.2
+    contrast_factor: 0.2
+    saturation_factor: 0.2
+    hue_factor: 0.05
+  
+  # Grayscale
+  grayscale:
+    enabled: false
+    probability: 0.1
+  
+  # Invert colors
+  invert:
+    enabled: false
+    probability: 0.05
+  
+  # Posterize
+  posterize:
+    enabled: false
+    bits: 4
+    probability: 0.1
+  
+  # Equalize histogram
+  equalize:
+    enabled: true
+    probability: 0.2
+
+# ──────────────────────────────────────
+# BLUR AUGMENTATIONS
+# ──────────────────────────────────────
+
+blur:
+  # Gaussian blur
+  gaussian_blur:
+    enabled: true
+    kernel_size: [3, 5]
+    sigma: [0.1, 2.0]
+    probability: 0.3
+  
+  # Motion blur
+  motion_blur:
+    enabled: false
+    kernel_size: [3, 7]
+    angle: [0, 360]
+    probability: 0.2
+  
+  # Median blur
+  median_blur:
+    enabled: false
+    kernel_size: [3, 5]
+    probability: 0.15
+  
+  # Bilateral filter
+  bilateral_filter:
+    enabled: false
+    diameter: 9
+    sigma_color: 75
+    sigma_space: 75
+    probability: 0.1
+
+# ──────────────────────────────────────
+# NOISE AUGMENTATIONS
+# ──────────────────────────────────────
+
+noise:
+  # Gaussian noise
+  gaussian_noise:
+    enabled: true
+    std: [0.01, 0.05]
+    probability: 0.3
+  
+  # Salt and pepper noise
+  salt_pepper_noise:
+    enabled: false
+    amount: [0.01, 0.05]
+    probability: 0.2
+  
+  # Poisson noise
+  poisson_noise:
+    enabled: false
+    probability: 0.1
+  
+  # ISO noise
+  iso_noise:
+    enabled: false
+    color_shift: [0.0, 0.05]
+    intensity: [0.0, 0.1]
+    probability: 0.1
+
+# ──────────────────────────────────────
+# OCCLUSION AUGMENTATIONS
+# ──────────────────────────────────────
+
+occlusion:
+  # Cutout (random erasing)
+  cutout:
+    enabled: true
+    probability: 0.3
+    
+    num_holes: 1
+    size_ratio: [0.02, 0.2]  # Ratio of image
+    fill_color: "random"  # random, black, mean
+  
+  # Random erasing
+  random_erasing:
+    enabled: false
+    probability: 0.5
+    scale: [0.02, 0.33]
+    ratio: [0.3, 3.3]
+  
+  # Cutmix
+  cutmix:
+    enabled: false
+    probability: 0.3
+    alpha: 1.0  # Beta distribution parameter
+  
+  # Mixup
+  mixup:
+    enabled: false
+    probability: 0.3
+    alpha: 1.0
+  
+  # Mosaic augmentation
+  mosaic:
+    enabled: false
+    probability: 0.2
+    n_tiles: 4
+
+# ──────────────────────────────────────
+# WEATHER AUGMENTATIONS
+# ──────────────────────────────────────
+
+weather:
+  # Rain
+  rain:
+    enabled: false
+    intensity: [0.1, 0.5]
+    probability: 0.1
+  
+  # Fog
+  fog:
+    enabled: false
+    intensity: [0.1, 0.5]
+    probability: 0.1
+  
+  # Snow
+  snow:
+    enabled: false
+    intensity: [0.1, 0.5]
+    probability: 0.1
+  
+  # Frost
+  frost:
+    enabled: false
+    intensity: [0.1, 0.5]
+    probability: 0.05
+  
+  # Sun flare
+  sun_flare:
+    enabled: false
+    probability: 0.05
+    num_flares: 1
+
+# ──────────────────────────────────────
+# DISTORTION AUGMENTATIONS
+# ──────────────────────────────────────
+
+distortion:
+  # Barrel distortion
+  barrel_distortion:
+    enabled: false
+    strength: 0.2
+    probability: 0.1
+  
+  # Pincushion distortion
+  pincushion_distortion:
+    enabled: false
+    strength: 0.2
+    probability: 0.1
+  
+  # Grid distortion
+  grid_distortion:
+    enabled: false
+    num_steps: 5
+    distort_limit: 0.3
+    probability: 0.1
+  
+  # Optical distortion
+  optical_distortion:
+    enabled: false
+    distort_limit: 0.05
+    shift_limit: 0.05
+    probability: 0.1
+
+# ──────────────────────────────────────
+# COMPRESSION AUGMENTATIONS
+# ──────────────────────────────────────
+
+compression:
+  # JPEG compression
+  jpeg_compression:
+    enabled: true
+    quality: [50, 95]
+    probability: 0.3
+  
+  # WebP compression
+  webp_compression:
+    enabled: false
+    quality: [50, 95]
+    probability: 0.2
+  
+  # PNG compression
+  png_compression:
+    enabled: false
+    compression_level: [6, 9]
+    probability: 0.1
+
+# ──────────────────────────────────────
+# ADVANCED AUGMENTATIONS
+# ──────────────────────────────────────
+
+advanced:
+  # Random crop and resize
+  random_crop_resize:
+    enabled: true
+    scale: [0.7, 1.0]
+    ratio: [0.8, 1.2]
+    probability: 0.3
+    
+    resize_method: "bilinear"  # bilinear, bicubic, lanczos
+  
+  # Auto-augment (learned augmentation)
+  auto_augment:
+    enabled: false
+    policy: "imagenet"  # imagenet, cifar10
+    magnitude: 9
+  
+  # RandAugment (random magnitude augmentation)
+  rand_augment:
+    enabled: false
+    num_ops: 2
+    magnitude: 9
+  
+  # Augmentation policy
+  augmentation_policy:
+    enabled: false
+    num_policies: 10
+    ops_per_policy: 2
+
+# ──────────────────────────────────────
+# FACE-SPECIFIC AUGMENTATIONS
+# ──────────────────────────────────────
+
+face_specific:
+  # Head pose variation
+  head_pose:
+    enabled: false
+    yaw: [-30, 30]
+    pitch: [-20, 20]
+    roll: [-10, 10]
+    probability: 0.2
+  
+  # Expression variation
+  expression:
+    enabled: false
+    expressions: ["neutral", "smile", "angry", "sad"]
+    probability: 0.2
+  
+  # Age variation
+  age_variation:
+    enabled: false
+    age_range: [20, 60]
+    probability: 0.1
+  
+  # Skin tone variation
+  skin_tone:
+    enabled: false
+    tone_range: [0.5, 1.5]
+    probability: 0.1
+  
+  # Eye gaze
+  eye_gaze:
+    enabled: false
+    gaze_angles: [-30, 30]
+    probability: 0.1
+
+# ──────────────────────────────────────
+# AUGMENTATION STRATEGY
+# ──────────────────────────────────────
+
+strategy:
+  # Sequential vs Parallel
+  mode: "sequential"  # sequential, parallel, random
+  
+  # Number of augmentations per image
+  num_augmentations: 3
+  
+  # Probability of applying augmentation pipeline
+  pipeline_probability: 0.7
+  
+  # Random order
+  random_order: true
+  
+  # Apply different augmentations each epoch
+  per_epoch_variation: true
+
+# ──────────────────────────────────────
+# AUGMENTATION PARAMETERS BY DATASET
+# ──────────────────────────────────────
+
+dataset_specific:
+  # VGGFace2 (large, clean)
+  vggface2:
+    strength: "light"
+    enable_mixing: true
+  
+  # CASIA-WebFace (medium)
+  casia_webface:
+    strength: "medium"
+    enable_mixing: true
+  
+  # LFW (small, unconstrained)
+    strength: "heavy"
+    enable_mixing: true
+    enable_synthetic: true
+  
+  # Custom CCTV (challenging)
+  custom_cctv:
+    strength: "heavy"
+    enable_weather: true
+    enable_occlusion: true
+    enable_compression: true
+
+# ──────────────────────────────────────
+# VALIDATION AUGMENTATION
+# ──────────────────────────────────────
+
+validation:
+  # Whether to apply augmentation during validation
+  enabled: false
+  
+  # Test-time augmentation (TTA)
+  tta:
+    enabled: true
+    num_augmentations: 5
+    tta_mode: "flip_rotate"  # flip_rotate, random, ensemble
+  
+  # Only apply simple transforms
+  transforms:
+    - horizontal_flip
+    - minor_rotation
+
+# ──────────────────────────────────────
+# MONITORING & VISUALIZATION
+# ──────────────────────────────────────
+
+monitoring:
+  # Save augmented images for inspection
+  save_augmented_images: false
+  save_dir: "logs/augmented_samples"
+  save_frequency: 100  # Every N batches
+  
+  # Tensorboard visualization
+  tensorboard:
+    enabled: true
+    log_dir: "experiments/runs/augmentation"
+  
+  # Statistics
+  track_augmentation_stats: true
+  log_augmentation_used: true

@@ -1,22 +1,84 @@
-__pycache__/
-*.pyc
-*.pyo
-*.pyd
-.env
-.env.*
+# OS / editor
 .DS_Store
-.ipynb_checkpoints/
-logs/
-data/raw/
-models/checkpoints/
-models/pretrained/
-models/exports/onnx/
-models/exports/tflite/
-models/exports/tensorrt/
-database/*.db
-*.h5
-*.pt
-*.pth
+.vscode/
+
+# Python cache / build
+__pycache__/
+*.py[cod]
+*.so
+*.dylib
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+.hypothesis/
+.coverage
+.coverage.*
+htmlcov/
+build/
+dist/
+*.egg-info/
+
+# Virtual environments
 .venv/
 venv/
+env/
+
+# Environment and secrets
+.env
+.env.*
+!.env.example
+
+# Jupyter
+.ipynb_checkpoints/
+
+# Logs and runtime outputs
+logs/
+*.log
+
+# Experiment tracking outputs
+mlruns/
+wandb/
+
+# Data artifacts (keep raw/processed/splits local)
+data/raw/
+data/processed/
+data/splits/
+data/photos/
+
+# Model artifacts
+models/checkpoints/
+models/exports/
+
+# Generic ML weights / exports
+*.pt
+*.pth
+*.ckpt
+*.onnx
+*.engine
+*.tflite
+*.trt
+*.h5
+*.hdf5
+*.pb
+
+# Local databases and embedding stores
+database/*.db
+database/*.sqlite
+database/*.sqlite3
+database/*_embeddings.npy
+database/*_embs.npy
+database/*_ids.json
+database/*_metadata.json
+
+# Temporary / generated media and reports
+docs/results/webcam_snapshots/
+tests/results/
+experiments/runs/
+
+# Misc temporary files
+*.tmp
+*.temp
+*.swp
+
+# Git Ignore
 .gitignore

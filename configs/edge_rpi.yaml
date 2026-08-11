@@ -1,10 +1,76 @@
+# ============================================
+# Edge Deployment Configuration - Raspberry Pi
+# ============================================
+
+project:
+  name: "FaceRecognitionFinal-Edge"
+  version: "1.0.0"
+  seed: 42
+
+experiment:
+  name: "mobilefacenet_rpi_optimized"
+
 model:
-  backbone: mobilefacenet
-  quantization: int8
-  input_size: 112
-training:
-  batch_size: 16
-  epochs: 30
-  lr: 5e-5
+  name: "mobilefacenet"
+  backbone: "mobilefacenet"
+  embedding_dim: 128
+  width_multiplier: 1.0
+  pretrained: true
+
+edge_optimization:
+  # Target device
+  target_device: "raspberry_pi_4"
+  
+  # Model compression
+  pruning:
+    enabled: true
+    method: "structured"  # structured, unstructured
+    amount: 0.3
+    schedule: "gradual"  # one_shot, gradual
+  
+  quantization:
+    enabled: true
+    method: "ptq"  # ptq, qat
+    backend: "qnnpack"  # qnnpack, fbgemm, x86
+    dtype: "int8"  # int8, fp16
+  
+  knowledge_distillation:
+    enabled: false
+    teacher_model: "arcface_resnet100"
+    temperature: 4.0
+    alpha: 0.7
+  
+  # Compilation
+  compilation:
+    enabled: true
+    format: "tflite"  # onnx, tflite, openvino, tensorrt
+    
+    tflite:
+      optimization: "DEFAULT"  # DEFAULT, OPTIMIZE_FOR_SIZE, OPTIMIZE_FOR_LATENCY
+      representative_dataset: true
+      int8_only: true
+
+hardware:
+  device: "cpu"
+  num_workers: 2
+  pin_memory: false
+
+inference:
+  batch_size: 1
+  num_threads: 4
+  
+  # Performance targets
+  target_latency_ms: 150
+  target_memory_mb: 50
+  target_fps: 10
+
 deployment:
-  target: raspberry_pi
+  api:
+    enabled: true
+    framework: "tflite_runtime"  # tflite_runtime, onnxruntime, pytorch_mobile
+  
+  edge_device:
+    type: "raspberry_pi"
+    model: "4B"
+    ram_gb: 4
+    os: "raspberry_pi_os"

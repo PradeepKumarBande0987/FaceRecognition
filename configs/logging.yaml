@@ -1,0 +1,304 @@
+# ============================================
+# Logging Configuration
+# ============================================
+
+logging:
+  # Root logger level
+  level: "INFO"  # DEBUG, INFO, WARNING, ERROR, CRITICAL
+  
+  # Log directory
+  log_dir: "logs"
+  
+  # Log format
+  format:
+    simple: "[%(asctime)s] %(levelname)s - %(message)s"
+    detailed: "[%(asctime)s] %(name)s [%(filename)s:%(lineno)d] %(levelname)s - %(message)s"
+    json: true  # Also log as JSON for structured logging
+  
+  # Propagate logs to console
+  console:
+    enabled: true
+    level: "INFO"
+    format: "detailed"
+    colorize: true
+
+# ──────────────────────────────────────
+# TRAINING LOGS
+# ──────────────────────────────────────
+
+training:
+  enabled: true
+  log_dir: "logs/training"
+  
+  # What to log
+  log_epoch: true
+  log_batch: false  # Frequent, set to true for debugging
+  log_loss: true
+  log_metrics: true
+  log_lr: true
+  log_time: true
+  
+  # Batch logging interval
+  batch_log_interval: 50  # Every N batches
+  
+  # File logging
+  file:
+    enabled: true
+    filename: "training.log"
+    level: "INFO"
+    backup_count: 10
+    max_bytes: 10485760  # 10MB
+  
+  # Tensorboard
+  tensorboard:
+    enabled: true
+    log_dir: "experiments/runs/tensorboard"
+    flush_interval: 30  # seconds
+  
+  # Wandb (Weights & Biases)
+  wandb:
+    enabled: false
+    project: "face-recognition-final"
+    entity: null  # Your wandb username
+    tags: ["training"]
+    save_code: true
+
+# ──────────────────────────────────────
+# INFERENCE LOGS
+# ──────────────────────────────────────
+
+inference:
+  enabled: true
+  log_dir: "logs/inference"
+  
+  # What to log
+  log_detections: true
+  log_embeddings: false  # Can be verbose
+  log_matches: true
+  log_errors: true
+  log_performance: true
+  
+  # File logging
+  file:
+    enabled: true
+    filename: "inference.log"
+    level: "INFO"
+    backup_count: 5
+  
+  # JSON logging for parsed results
+  json_results:
+    enabled: true
+    output_dir: "logs/inference/results"
+
+# ──────────────────────────────────────
+# ACCESS LOGS
+# ──────────────────────────────────────
+
+access:
+  enabled: true
+  log_dir: "logs/access"
+  
+  # Access log file
+  file:
+    enabled: true
+    filename: "access.log"
+    level: "INFO"
+    backup_count: 20  # Keep many access logs
+  
+  # What to log
+  log_timestamp: true
+  log_user_id: true
+  log_identity: true
+  log_similarity_score: true
+  log_match_result: true
+  log_security_status: true
+  log_ip_address: false  # Privacy
+  
+  # Retention
+  retention_days: 90
+  archive_old_logs: true
+
+# ──────────────────────────────────────
+# ERROR & EXCEPTION LOGS
+# ──────────────────────────────────────
+
+errors:
+  enabled: true
+  log_dir: "logs/errors"
+  
+  # Exception logging
+  file:
+    enabled: true
+    filename: "errors.log"
+    level: "ERROR"
+    backup_count: 10
+  
+  # Log full stack traces
+  log_traceback: true
+  log_context: true  # Additional context info
+  
+  # Alert on errors
+  alerts:
+    enabled: false
+    email_on_critical: false
+    email: null
+    slack_on_error: false
+    slack_webhook: null
+
+# ──────────────────────────────────────
+# SECURITY & AUDIT LOGS
+# ──────────────────────────────────────
+
+security:
+  enabled: true
+  log_dir: "logs/security"
+  
+  # Security event logging
+  file:
+    enabled: true
+    filename: "security.log"
+    level: "INFO"
+    backup_count: 20
+  
+  # What to log
+  log_failures: true
+  log_rejections: true
+  log_suspicious_activity: true
+  log_threshold_violations: true
+  
+  # Audit trail
+  audit:
+    enabled: true
+    detailed: true
+    include_embeddings: false  # Privacy
+
+# ──────────────────────────────────────
+# API LOGS
+# ──────────────────────────────────────
+
+api:
+  enabled: true
+  log_dir: "logs/api"
+  
+  # Request/response logging
+  file:
+    enabled: true
+    filename: "api.log"
+    level: "INFO"
+    backup_count: 10
+  
+  # What to log
+  log_requests: true
+  log_responses: true
+  log_response_time: true
+  log_errors: true
+  
+  # Privacy
+  exclude_sensitive_data: true
+  mask_embeddings: true
+  mask_user_ids: false
+
+# ──────────────────────────────────────
+# PERFORMANCE & METRICS LOGS
+# ──────────────────────────────────────
+
+performance:
+  enabled: true
+  log_dir: "logs/performance"
+  
+  # Performance metrics
+  file:
+    enabled: true
+    filename: "performance.log"
+    level: "INFO"
+    backup_count: 5
+  
+  # What to log
+  log_memory_usage: true
+  log_gpu_usage: true
+  log_inference_time: true
+  log_throughput: true
+  log_latency: true
+  
+  # Interval
+  log_interval: 60  # seconds
+  
+  # CSV export for analysis
+  csv_export:
+    enabled: true
+    output_dir: "logs/performance/metrics"
+    flush_interval: 300  # seconds
+
+# ──────────────────────────────────────
+# LOG ROTATION & RETENTION
+# ──────────────────────────────────────
+
+rotation:
+  # File rotation
+  max_bytes: 10485760  # 10MB
+  backup_count: 5
+  
+  # Time-based rotation
+  time_based:
+    enabled: true
+    interval: "midnight"  # midnight, hourly, daily
+    when: "midnight"
+    interval_count: 1
+    backup_count: 10
+  
+  # Compression of old logs
+  compress_old_logs: true
+  compression_format: "gzip"  # gzip, bz2
+
+# ──────────────────────────────────────
+# REMOTE LOGGING
+# ──────────────────────────────────────
+
+remote:
+  enabled: false
+  
+  # Syslog
+  syslog:
+    enabled: false
+    host: "localhost"
+    port: 514
+    facility: "local0"
+  
+  # HTTP endpoint
+  http:
+    enabled: false
+    url: "http://logging-server:8080/logs"
+    method: "POST"
+    timeout: 5
+  
+  # ELK Stack
+  elk:
+    enabled: false
+    elasticsearch_url: "http://elasticsearch:9200"
+    index_prefix: "face-recognition"
+  
+  # CloudWatch (AWS)
+  cloudwatch:
+    enabled: false
+    region: "us-east-1"
+    log_group: "face-recognition"
+
+# ──────────────────────────────────────
+# DEBUG LOGGING
+# ──────────────────────────────────────
+
+debug:
+  enabled: false
+  
+  # Debug log file
+  file:
+    enabled: true
+    filename: "debug.log"
+    level: "DEBUG"
+    backup_count: 3
+  
+  # What to log in debug mode
+  log_function_calls: true
+  log_variable_values: true
+  log_timing: true
+  log_memory_allocations: false  # Can be verbose

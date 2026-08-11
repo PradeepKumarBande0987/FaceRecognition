@@ -1,0 +1,12 @@
+{
+  "n_pairs": 500,
+  "accuracy_at_threshold": 0.6,
+  "best_accuracy": 0.6,
+  "best_threshold": 0.1,
+  "auc": 0.4913,
+  "eer": 0.5092,
+  "threshold_used": 0.45,
+  "genuine_mean_score": 0.9908,
+  "impostor_mean_score": 0.9922,
+  "evaluation_time_sec": 14.11
+}

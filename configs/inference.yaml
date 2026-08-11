@@ -1,0 +1,121 @@
+# ============================================
+# Inference Configuration
+# ============================================
+
+inference:
+  # Model loading
+  model:
+    backbone: "resnet50"
+    pretrained: true
+    checkpoint: null  # Path to checkpoint, if null uses pretrained
+    device: "cuda"  # cuda, cpu, mps
+    precision: "fp32"  # fp32, fp16, int8
+  
+  # Input preprocessing
+  preprocessing:
+    input_size: [112, 112]
+    channels: 3
+    normalize:
+      enabled: true
+      mean: [0.485, 0.456, 0.406]
+      std: [0.229, 0.224, 0.225]
+    
+    # Face alignment
+    face_alignment:
+      enabled: true
+      method: "arcface"  # arcface, simple_crop
+      use_landmarks: true
+      padding: 0.1
+  
+  # Detection parameters
+  detection:
+    min_face_size: 20  # Minimum face bounding box size (pixels)
+    min_confidence: 0.5  # Minimum detection confidence
+    nms_threshold: 0.4  # Non-maximum suppression threshold
+    max_faces_per_frame: 10
+    
+    # Detector backend
+    backend: "haar"  # haar, yunet, scrfd
+    
+    haar:
+      scale_factor: 1.1
+      min_neighbors: 5
+      flags: "CASCADE_SCALE_IMAGE"
+    
+    yunet:
+      score_threshold: 0.5
+      nms_threshold: 0.3
+      top_k: 10
+    
+    scrfd:
+      model: "buffalo_l"
+      det_size: [640, 640]
+  
+  # Embedding extraction
+  embedding:
+    dimension: 512
+    normalize: true  # L2 normalization
+    normalize_eps: 1e-8
+  
+  # Post-processing
+  postprocessing:
+    # Similarity matching
+    similarity_metric: "cosine"  # cosine, euclidean, manhattan
+    distance_threshold: 0.45  # Threshold for considering as match
+    
+    # Top-K results
+    top_k: 3  # Number of top matches to return
+    
+    # Filtering
+    min_similarity: 0.3  # Minimum similarity to include in results
+    filter_duplicates: true
+    duplicate_threshold: 0.95
+  
+  # Batch processing
+  batch:
+    enabled: true
+    size: 32
+    num_workers: 4
+    pin_memory: true
+    prefetch_factor: 2
+  
+  # Performance
+  performance:
+    enable_caching: true
+    cache_size_mb: 1000
+    enable_quantization: false
+    quantization_type: "int8"
+  
+  # Logging
+  logging:
+    log_detections: false
+    log_embeddings: false
+    verbose: false
+
+# Real-time webcam inference
+webcam:
+  device_id: 0
+  resolution: [640, 480]
+  fps: 30
+  
+  # Face tracking
+  tracking:
+    enabled: true
+    method: "centroid"  # centroid, kalman
+    max_age: 30  # Max frames to keep dead track
+    min_hits: 3  # Min detections to start track
+  
+  # Display
+  display:
+    show_fps: true
+    show_landmarks: true
+    show_embeddings: false
+    show_similarity_scores: true
+    draw_confidence: true
+    
+    # Colors (BGR)
+    colors:
+      face_bbox: [50, 220, 50]      # Green
+      landmarks: [230, 160, 30]     # Blue
+      text: [255, 255, 255]         # White
+      low_confidence: [50, 50, 220] # Red

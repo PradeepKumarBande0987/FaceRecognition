@@ -1,0 +1,444 @@
+# ============================================
+# API Server Configuration
+# ============================================
+
+api:
+  # Server settings
+  host: "0.0.0.0"
+  port: 8000
+  workers: 4
+  reload: false
+  
+  # Framework
+  framework: "fastapi"  # fastapi, flask, django
+  
+  # CORS settings
+  cors:
+    enabled: true
+    allow_origins: ["*"]  # Restrict in production
+    allow_methods: ["*"]
+    allow_headers: ["*"]
+    allow_credentials: true
+  
+  # Request/Response settings
+  request:
+    max_size_mb: 10  # Max upload size
+    timeout_seconds: 30
+    
+    # Multipart form data
+    multipart:
+      enabled: true
+      max_file_size_mb: 5
+  
+  response:
+    compression:
+      enabled: true
+      compression_level: 6  # 1-9
+    
+    pagination:
+      enabled: true
+      default_limit: 10
+      max_limit: 100
+  
+  # API versioning
+  versioning:
+    enabled: true
+    default_version: "v1"
+    versions: ["v1", "v2"]
+
+# ──────────────────────────────────────
+# AUTHENTICATION & AUTHORIZATION
+# ──────────────────────────────────────
+
+auth:
+  enabled: true
+  
+  # Authentication methods
+  methods:
+    api_key: true
+    jwt: true
+    oauth2: false
+    basic_auth: false
+  
+  # API Key authentication
+  api_key:
+    enabled: true
+    header_name: "X-API-Key"
+    store_type: "memory"  # memory, database, file
+    keys_file: null  # Path to API keys file
+    
+    # Key validation
+    key_length: 32
+    rotate_keys: false
+    rotation_days: 90
+  
+  # JWT authentication
+  jwt:
+    enabled: true
+    secret_key: null  # Set via environment variable
+    algorithm: "HS256"  # HS256, RS256
+    expiration_minutes: 60
+    
+    # Token refresh
+    refresh_tokens:
+      enabled: true
+      expiration_days: 7
+  
+  # OAuth2 settings (if enabled)
+  oauth2:
+    enabled: false
+    provider: "google"  # google, github, microsoft
+    client_id: null
+    client_secret: null
+    scopes: ["openid", "profile", "email"]
+
+# ──────────────────────────────────────
+# RATE LIMITING
+# ──────────────────────────────────────
+
+rate_limiting:
+  enabled: true
+  
+  # Global rate limit
+  global:
+    requests_per_minute: 1000
+    requests_per_hour: 10000
+  
+  # Per-endpoint limits
+  endpoints:
+    recognize:
+      requests_per_minute: 100
+      requests_per_hour: 1000
+    
+    register:
+      requests_per_minute: 50
+      requests_per_hour: 500
+    
+    verify:
+      requests_per_minute: 200
+      requests_per_hour: 2000
+    
+    health_check:
+      requests_per_minute: 600
+      requests_per_hour: 36000  # Basically unlimited
+  
+  # Per-user/API-key limits
+  per_user:
+    enabled: true
+    requests_per_minute: 60
+    requests_per_hour: 1000
+  
+  # Storage
+  storage: "memory"  # memory, redis, database
+  redis_url: null  # Set if using Redis
+
+# ──────────────────────────────────────
+# ENDPOINTS CONFIGURATION
+# ──────────────────────────────────────
+
+endpoints:
+  # Health check
+  health_check:
+    enabled: true
+    path: "/health"
+    cache_seconds: 0
+  
+  # Recognition (inference)
+  recognize:
+    enabled: true
+    path: "/api/v1/recognize"
+    methods: ["POST"]
+    
+    # Input validation
+    input:
+      accept_formats: ["image/jpeg", "image/png", "image/webp"]
+      max_image_size_mb: 5
+    
+    # Output settings
+    output:
+      return_embeddings: false
+      return_landmarks: true
+      return_face_crop: false
+    
+    # Security checks
+    security:
+      enabled: true
+      liveness_check: true
+      spoof_check: true
+      adversarial_check: false
+  
+  # Register identity
+  register:
+    enabled: true
+    path: "/api/v1/register"
+    methods: ["POST"]
+    
+    # Registration settings
+    min_images: 1
+    max_images: 10
+    
+    # Database settings
+    database:
+      auto_create_identity: true
+      overwrite_existing: false
+  
+  # Verify (1:1 comparison)
+  verify:
+    enabled: true
+    path: "/api/v1/verify"
+    methods: ["POST"]
+    
+    # Verification settings
+    return_similarity_score: true
+    return_detailed_comparison: true
+  
+  # List identities
+  list_identities:
+    enabled: true
+    path: "/api/v1/identities"
+    methods: ["GET"]
+    
+    pagination:
+      enabled: true
+      default_limit: 10
+  
+  # Get identity details
+  get_identity:
+    enabled: true
+    path: "/api/v1/identities/{identity_id}"
+    methods: ["GET"]
+  
+  # Delete identity
+  delete_identity:
+    enabled: true
+    path: "/api/v1/identities/{identity_id}"
+    methods: ["DELETE"]
+    
+    # Confirmation required
+    require_confirmation: false
+  
+  # Update identity metadata
+  update_identity:
+    enabled: true
+    path: "/api/v1/identities/{identity_id}"
+    methods: ["PUT", "PATCH"]
+  
+  # Batch operations
+  batch_recognize:
+    enabled: true
+    path: "/api/v1/batch/recognize"
+    methods: ["POST"]
+    
+    max_images_per_batch: 100
+  
+  # Database management
+  database_info:
+    enabled: true
+    path: "/api/v1/database/info"
+    methods: ["GET"]
+  
+  # Model info
+  model_info:
+    enabled: true
+    path: "/api/v1/models"
+    methods: ["GET"]
+  
+  # Metrics/statistics
+  metrics:
+    enabled: true
+    path: "/api/v1/metrics"
+    methods: ["GET"]
+
+# ──────────────────────────────────────
+# DATABASE CONFIGURATION
+# ──────────────────────────────────────
+
+database:
+  # Embedding storage
+  type: "filesystem"  # filesystem, postgresql, mongodb, redis
+  
+  # Filesystem settings
+  filesystem:
+    base_dir: "database"
+    format: "npy"  # npy, h5, pickle
+    index_type: "json"  # json, pickle
+  
+  # PostgreSQL settings (if type is postgresql)
+  postgresql:
+    host: "localhost"
+    port: 5432
+    username: "face_recognition"
+    password: null  # Use environment variable
+    database: "face_embeddings"
+    pool_size: 10
+  
+  # MongoDB settings (if type is mongodb)
+  mongodb:
+    uri: "mongodb://localhost:27017"
+    database: "face_recognition"
+    collection: "embeddings"
+  
+  # Redis settings (if type is redis)
+  redis:
+    host: "localhost"
+    port: 6379
+    db: 0
+    password: null
+    ttl_seconds: 86400  # 1 day
+  
+  # Connection pooling
+  pooling:
+    enabled: true
+    pool_size: 20
+    max_overflow: 10
+
+# ──────────────────────────────────────
+# CACHING
+# ──────────────────────────────────────
+
+caching:
+  enabled: true
+  backend: "memory"  # memory, redis, memcached
+  
+  # Memory cache
+  memory:
+    max_size_mb: 500
+    eviction_policy: "lru"  # lru, lfu, fifo
+  
+  # Redis cache
+  redis:
+    host: "localhost"
+    port: 6379
+    db: 1
+    ttl_seconds: 3600
+  
+  # Cache keys
+  cache_embeddings: true
+  cache_face_detection: true
+  cache_landmarks: false
+  
+  # TTL per cache type
+  ttl:
+    embeddings: 3600
+    detections: 1800
+    landmarks: 1800
+
+# ──────────────────────────────────────
+# SECURITY SETTINGS
+# ──────────────────────────────────────
+
+security:
+  # HTTPS
+  ssl:
+    enabled: false
+    cert_file: null
+    key_file: null
+  
+  # Password policies
+  password_policy:
+    enabled: true
+    min_length: 12
+    require_uppercase: true
+    require_lowercase: true
+    require_numbers: true
+    require_special: true
+  
+  # IP whitelist/blacklist
+  ip_filtering:
+    enabled: false
+    whitelist: []
+    blacklist: []
+  
+  # Request signing
+  request_signing:
+    enabled: false
+    algorithm: "hmac_sha256"
+  
+  # Data encryption
+  encryption:
+    enabled: false
+    algorithm: "aes_256"
+    key_rotation_days: 90
+
+# ──────────────────────────────────────
+# MONITORING & HEALTH CHECKS
+# ──────────────────────────────────────
+
+monitoring:
+  # Health check endpoints
+  health_check:
+    enabled: true
+    interval_seconds: 30
+    checks:
+      database: true
+      model_loaded: true
+      gpu_available: true
+  
+  # Metrics collection
+  metrics:
+    enabled: true
+    collect_request_metrics: true
+    collect_model_metrics: true
+    collect_system_metrics: true
+  
+  # Prometheus integration
+  prometheus:
+    enabled: false
+    port: 9090
+    metrics_path: "/metrics"
+  
+  # Error tracking
+  error_tracking:
+    enabled: false
+    service: "sentry"  # sentry, rollbar, airbrake
+    dsn: null
+
+# ──────────────────────────────────────
+# LOGGING & AUDITING
+# ──────────────────────────────────────
+
+logging:
+  level: "INFO"
+  format: "json"
+  
+  # Access logs
+  access_logs: true
+  access_log_path: "logs/api/access.log"
+  
+  # Error logs
+  error_logs: true
+  error_log_path: "logs/api/errors.log"
+  
+  # Audit trail
+  audit:
+    enabled: true
+    log_all_requests: true
+    log_sensitive_data: false
+    audit_log_path: "logs/api/audit.log"
+
+# ──────────────────────────────────────
+# TESTING & DOCUMENTATION
+# ──────────────────────────────────────
+
+documentation:
+  # Swagger/OpenAPI
+  swagger:
+    enabled: true
+    path: "/docs"
+  
+  # ReDoc
+  redoc:
+    enabled: true
+    path: "/redoc"
+  
+  # OpenAPI schema
+  openapi:
+    enabled: true
+    path: "/openapi.json"
+    version: "3.0.2"
+
+# Testing mode
+testing:
+  enabled: false
+  mock_responses: false
+  use_dummy_model: false

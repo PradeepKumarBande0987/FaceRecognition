@@ -1,0 +1,379 @@
+================================================================================
+FACE RECOGNITION PROJECT - API DOCUMENTATION
+================================================================================
+
+1. FACE DETECTION API
+================================================================================
+
+PURPOSE:
+  Detects faces in images and returns bounding box coordinates for each face.
+
+HOW IT WORKS:
+  - Accepts image input (file path or numpy array)
+  - Uses deep learning models (MTCNN or dlib) for face detection
+  - Returns face locations, confidence scores, and facial landmarks
+  - Optimized for multiple faces in a single image
+
+WHY IT'S NEEDED:
+  - Foundation for face recognition pipeline
+  - Identifies regions of interest before processing
+  - Enables batch processing of multiple subjects
+
+METHODS:
+  detect_faces(image_path: str) -> List[Dict]
+    Returns: [{'x': int, 'y': int, 'width': int, 'height': int, 'confidence': float}]
+  
+  detect_faces_from_array(image_array: np.ndarray) -> List[Dict]
+    Returns: Face locations in image array format
+
+NEW FEATURES:
+  - GPU acceleration support for faster processing
+  - Batch detection for multiple images
+  - Confidence thresholding for filtering weak detections
+
+
+2. FACE ENCODING API
+================================================================================
+
+PURPOSE:
+  Converts detected faces into 128-dimensional numeric encodings for comparison.
+
+HOW IT WORKS:
+  - Takes cropped face images from detection API
+  - Runs through deep CNN encoder (FaceNet/VGGFace2)
+  - Produces consistent vector representation of facial features
+  - Same person produces similar encodings regardless of angle/lighting
+
+WHY IT'S NEEDED:
+  - Enables numerical comparison between faces
+  - Creates searchable database of face identities
+  - Forms basis for recognition and matching
+
+METHODS:
+  encode_face(face_image: np.ndarray) -> np.ndarray
+    Returns: 128-dimensional encoding vector
+  
+  encode_faces_batch(face_images: List[np.ndarray]) -> List[np.ndarray]
+    Returns: List of encoding vectors
+
+NEW FEATURES:
+  - Multi-model support (FaceNet, VGGFace2, ArcFace)
+  - Encoding caching to reduce computation
+  - Model auto-detection and selection
+
+
+3. FACE MATCHING API
+================================================================================
+
+PURPOSE:
+  Compares two face encodings to determine if they represent the same person.
+
+HOW IT WORKS:
+  - Calculates Euclidean distance between encoding vectors
+  - Compares distance against configurable threshold
+  - Returns match probability and confidence score
+  - Supports one-to-one and one-to-many matching
+
+WHY IT'S NEEDED:
+  - Core verification/authentication functionality
+  - Determines if two images contain same person
+  - Essential for security and access control systems
+
+METHODS:
+  compare_faces(encoding1: np.ndarray, encoding2: np.ndarray, 
+                tolerance: float = 0.6) -> bool
+    Returns: True if same person, False otherwise
+  
+  get_face_distance(encoding1: np.ndarray, encoding2: np.ndarray) -> float
+    Returns: Euclidean distance between encodings
+  
+  match_face_to_database(face_encoding: np.ndarray, 
+                         database: Dict[str, np.ndarray]) -> Dict
+    Returns: {'match': str, 'confidence': float, 'distance': float}
+
+NEW FEATURES:
+  - Adjustable tolerance levels
+  - Batch matching against multiple faces
+  - Match confidence scoring
+  - Similarity ranking
+
+
+4. FACE RECOGNITION API
+================================================================================
+
+PURPOSE:
+  Identifies who a person is by comparing against registered database.
+
+HOW IT WORKS:
+  - Detects face in image
+  - Encodes the face
+  - Compares encoding against all known faces in database
+  - Returns closest match with identity label
+
+WHY IT'S NEEDED:
+  - Identifies people in photos/videos
+  - Integration point for real-world applications
+  - Enables attendance tracking, security, photo organization
+
+METHODS:
+  recognize_face(image_path: str, known_faces_db: Dict) -> Dict
+    Returns: {'name': str, 'confidence': float, 'distance': float}
+  
+  recognize_faces_bulk(image_path: str, known_faces_db: Dict) -> List[Dict]
+    Returns: List of recognized people in image
+
+NEW FEATURES:
+  - Multi-face recognition in single image
+  - Unknown person detection
+  - Configurable confidence thresholds
+  - Performance metrics and timing
+
+
+5. FACE REGISTRATION API
+================================================================================
+
+PURPOSE:
+  Registers new person's face into database for future recognition.
+
+HOW IT WORKS:
+  - Accepts face image(s) and person name
+  - Detects and encodes face
+  - Stores encoding with name identifier
+  - Supports multiple encodings per person for robustness
+
+WHY IT'S NEEDED:
+  - Builds searchable database of known faces
+  - Enables personalized recognition
+  - Allows system to learn new identities
+
+METHODS:
+  register_face(name: str, image_path: str, database_path: str) -> bool
+    Returns: True if successfully registered
+  
+  register_multiple_faces(name: str, image_paths: List[str], 
+                         database_path: str) -> bool
+    Returns: True if all faces registered
+  
+  update_face(name: str, image_path: str, database_path: str) -> bool
+    Returns: True if face updated
+
+NEW FEATURES:
+  - Multiple photos per person
+  - Face validation before registration
+  - Duplicate detection
+  - Database backup and versioning
+
+
+6. FACE VERIFICATION API
+================================================================================
+
+PURPOSE:
+  One-to-one verification - confirms if a face matches a claimed identity.
+
+HOW IT WORKS:
+  - User claims identity
+  - Captures/provides face image
+  - Encodes provided face
+  - Compares against stored encoding for claimed identity
+  - Returns match/no-match decision
+
+WHY IT'S NEEDED:
+  - Authentication for secure access
+  - Biometric identity verification
+  - Prevents unauthorized access
+
+METHODS:
+  verify_face(claimed_name: str, image_path: str, 
+              database_path: str, tolerance: float = 0.6) -> bool
+    Returns: True if verified, False if rejected
+  
+  verify_face_detailed(claimed_name: str, image_path: str, 
+                       database_path: str) -> Dict
+    Returns: {'verified': bool, 'confidence': float, 'distance': float}
+
+NEW FEATURES:
+  - Adjustable security levels (strictness)
+  - Anti-spoofing detection
+  - Liveness detection support
+  - Audit logging
+
+
+7. DATABASE MANAGEMENT API
+================================================================================
+
+PURPOSE:
+  Manages storage and retrieval of face encodings and metadata.
+
+HOW IT WORKS:
+  - Stores encodings in structured format (JSON/SQLite)
+  - Indexes faces for fast lookup
+  - Maintains face metadata (name, timestamp, photo)
+  - Supports database operations (add, update, delete, search)
+
+WHY IT'S NEEDED:
+  - Persistent storage of enrolled faces
+  - Efficient querying and matching
+  - System scalability
+
+METHODS:
+  save_encoding(name: str, encoding: np.ndarray, 
+                database_path: str, metadata: Dict = None) -> bool
+  
+  load_database(database_path: str) -> Dict
+  
+  delete_person(name: str, database_path: str) -> bool
+  
+  list_all_people(database_path: str) -> List[str]
+  
+  export_database(database_path: str, export_format: str) -> bytes
+  
+  import_database(import_path: str, database_path: str) -> bool
+
+NEW FEATURES:
+  - SQLite backend for scalability
+  - Encryption for sensitive data
+  - Metadata tags and filtering
+  - Database statistics and analytics
+  - Bulk import/export functionality
+
+
+8. IMAGE PREPROCESSING API
+================================================================================
+
+PURPOSE:
+  Prepares images for face detection and recognition.
+
+HOW IT WORKS:
+  - Loads images in various formats
+  - Normalizes resolution and color space
+  - Applies alignment for consistent results
+  - Handles edge cases (rotations, quality issues)
+
+WHY IT'S NEEDED:
+  - Improves accuracy across different image sources
+  - Handles real-world image variations
+  - Reduces processing overhead
+
+METHODS:
+  load_image(image_path: str) -> np.ndarray
+  
+  resize_image(image: np.ndarray, size: Tuple[int, int]) -> np.ndarray
+  
+  align_face(face_image: np.ndarray, landmarks: List[Tuple]) -> np.ndarray
+  
+  normalize_image(image: np.ndarray) -> np.ndarray
+
+NEW FEATURES:
+  - Automatic face alignment
+  - Quality assessment before processing
+  - Support for multiple image formats
+  - Histogram equalization
+
+
+9. STREAM/VIDEO API
+================================================================================
+
+PURPOSE:
+  Real-time face recognition in video streams or webcam feeds.
+
+HOW IT WORKS:
+  - Captures frames from video/webcam
+  - Detects and recognizes faces in each frame
+  - Tracks faces across frames for consistency
+  - Displays results with annotations
+
+WHY IT'S NEEDED:
+  - Security system integration
+  - Real-time identification scenarios
+  - Attendance tracking from video
+
+METHODS:
+  process_video_stream(video_source: str, known_faces_db: Dict,
+                       output_path: str = None) -> Dict
+  
+  process_webcam_live(known_faces_db: Dict, timeout: int = 0) -> None
+  
+  track_face_across_frames(frames: List[np.ndarray], 
+                          known_faces_db: Dict) -> List[Dict]
+
+NEW FEATURES:
+  - Frame-by-frame face tracking
+  - Confidence smoothing across frames
+  - Real-time performance optimization
+  - Video annotation with overlays
+
+
+10. UTILITY & HELPER APIs
+================================================================================
+
+PURPOSE:
+  Supporting functions for system configuration and analysis.
+
+HOW IT WORKS:
+  - Provides configuration management
+  - Performance metrics and benchmarking
+  - Error handling and logging
+  - System health checks
+
+METHODS:
+  get_system_info() -> Dict
+  
+  benchmark_performance(test_image_path: str) -> Dict
+  
+  set_log_level(level: str) -> None
+  
+  validate_image_quality(image_path: str) -> Dict
+  
+  clear_cache() -> None
+
+NEW FEATURES:
+  - Performance profiling tools
+  - System diagnostics
+  - Configuration validation
+  - Detailed logging and debugging
+
+
+================================================================================
+ERROR HANDLING
+================================================================================
+
+Common Error Codes:
+  - 001: Image not found
+  - 002: No faces detected in image
+  - 003: Invalid image format
+  - 004: Database connection error
+  - 005: Face recognition failed (low confidence)
+  - 006: Invalid parameters
+  - 007: Model loading error
+
+All APIs return error objects with code, message, and context.
+
+
+================================================================================
+CONFIGURATION
+================================================================================
+
+Default Settings:
+  - Face Detection Threshold: 0.5
+  - Face Match Tolerance: 0.6
+  - Model: FaceNet
+  - Image Size: 224x224
+  - Encoding Dimension: 128
+
+Environment Variables:
+  FACE_RECOGNITION_MODEL: Model selection
+  FACE_RECOGNITION_GPU: Enable GPU acceleration
+  FACE_RECOGNITION_DB_PATH: Database location
+  FACE_RECOGNITION_LOG_LEVEL: Logging verbosity
+
+
+================================================================================
+SECURITY CONSIDERATIONS
+================================================================================
+
+  - All face encodings are irreversible
+  - Database should be encrypted
+  - Access control recommended for API endpoints
+  - Regular security audits advised
+  - GDPR compliance for stored face data
+  - Audit logging for all recognition events

@@ -1,14 +1,205 @@
+# ============================================
+# Base Configuration for Face Recognition Training
+# ============================================
+
+project:
+  name: "FaceRecognitionFinal"
+  version: "1.0.0"
+  seed: 42
+
+experiment:
+  name: "arcface_baseline"
+  output_dir: "experiments/runs"
+  checkpoint_dir: "models/checkpoints"
+  log_dir: "logs/training"
+
 model:
-  backbone: arcface
+  name: "arcface"
+  backbone: "iresnet100"
+  embedding_dim: 512
+  dropout: 0.0
   pretrained: true
-  embedding_size: 512
+  pretrained_path: null
+  
+  # ArcFace specific parameters
+  arcface:
+    s: 64.0  # Scale factor
+    m: 0.5   # Angular margin
+    easy_margin: false
+  
+  # Normalization
+  normalize:
+    mean: [0.5, 0.5, 0.5]
+    std: [0.5, 0.5, 0.5]
+
+data:
+  # Dataset paths
+  train_root: "data/processed/train"
+  val_root: "data/processed/val"
+  test_root: "data/processed/test"
+  
+  # Annotations
+  train_annotation: "data/splits/train/annotations.csv"
+  val_annotation: "data/splits/val/annotations.csv"
+  test_annotation: "data/splits/test/annotations.csv"
+  
+  # Dataset parameters
+  num_classes: 10572  # CASIA-WebFace default
+  num_samples: 494414
+  
+  # Image parameters
+  input_size: [112, 112]
+  channels: 3
+  
+  # Augmentation
+  augmentation:
+    enabled: true
+    strength: "medium"  # none, light, medium, heavy
+    
+    # Specific augmentations
+    horizontal_flip: true
+    rotation: 15
+    scale: [0.9, 1.1]
+    brightness: 0.2
+    contrast: 0.2
+    saturation: 0.2
+    hue: 0.05
+    gaussian_noise: 0.01
+    cutout:
+      enabled: true
+      n_holes: 1
+      length: 40
+  
+  # Synthetic data
+  synthetic:
+    enabled: false
+    gan_checkpoint: null
+    mix_ratio: 0.2  # Ratio of synthetic to real data
+
 training:
-  batch_size: 32
+  # Basic training parameters
   epochs: 50
-  lr: 1e-4
+  batch_size: 128
+  accumulation_steps: 1
+  
+  # Optimizer
+  optimizer:
+    name: "sgd"
+    lr: 0.1
+    momentum: 0.9
+    weight_decay: 0.0005
+    nesterov: true
+  
+  # Learning rate scheduler
+  scheduler:
+    name: "cosine_warmup"
+    warmup_epochs: 5
+    warmup_lr: 0.01
+    min_lr: 0.00001
+    T_0: 10
+    T_mult: 2
+  
+  # Loss function
+  loss:
+    name: "arcface"
+    label_smoothing: 0.0
+  
+  # Training techniques
+  mixed_precision: true
+  gradient_clipping: 5.0
+  gradient_checkpointing: false
+  
+  # Validation
+  val_interval: 1
+  save_interval: 5
+  
+  # Early stopping
+  early_stopping:
+    enabled: true
+    patience: 10
+    min_delta: 0.001
+
+evaluation:
+  metrics:
+    - "accuracy"
+    - "precision"
+    - "recall"
+    - "f1_score"
+    - "roc_auc"
+  
+  # Verification metrics
+  verification:
+    enabled: true
+    pairs_file: null
+    n_folds: 10
+  
+  # Identification metrics
+  identification:
+    enabled: true
+    gallery_size: [100, 1000, 10000]
+
 fairness:
   enabled: true
-  audit_groups:
-    - gender
-    - age
-    - skin_tone
+  attributes:
+    - "gender"
+    - "race"
+    - "age_group"
+  
+  # Fairness metrics
+  metrics:
+    - "demographic_parity"
+    - "equalized_odds"
+    - "equal_opportunity"
+  
+  # Audit settings
+  audit_interval: 5
+  threshold_range: [0.1, 0.9]
+  
+  # Mitigation
+  mitigation:
+    enabled: true
+    method: "adversarial"  # adversarial, reweighting, threshold_optimization
+    lambda_adv: 1.0
+
+logging:
+  level: "INFO"
+  format: "%(asctime)s - %(name)s - %(levelname)s - %(message)s"
+  
+  # Log destinations
+  console: true
+  file: true
+  tensorboard: true
+  wandb:
+    enabled: false
+    project: "face-recognition"
+    entity: null
+
+hardware:
+  device: "auto"  # auto, cpu, cuda, mps
+  gpu_ids: [0]
+  num_workers: 8
+  pin_memory: true
+  persistent_workers: true
+
+checkpoint:
+  save_best: true
+  save_last: true
+  save_optimizer: true
+  save_scheduler: true
+  
+  # Resume training
+  resume: null  # Path to checkpoint
+
+security:
+  anti_spoofing:
+    enabled: true
+    model_path: "models/checkpoints/anti_spoofing.pth"
+    threshold: 0.7
+  
+  liveness:
+    enabled: true
+    methods: ["texture", "depth", "rppg"]
+  
+  encryption:
+    enabled: false
+    method: "aes256"

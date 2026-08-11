@@ -1,0 +1,284 @@
+# ============================================
+# Multimodal Configuration
+# ============================================
+
+multimodal:
+  enabled: false  # Set to true to enable multimodal recognition
+  
+  # Modalities to use
+  modalities:
+    face: true       # Facial recognition (primary)
+    voice: false     # Voice/speaker recognition
+    gait: false      # Gait recognition
+    iris: false      # Iris recognition
+  
+  # Fusion strategy
+  fusion:
+    method: "weighted_sum"  # weighted_sum, early_fusion, late_fusion, mlp
+    
+    # Modality weights (must sum to 1.0)
+    weights:
+      face: 0.6
+      voice: 0.2
+      gait: 0.15
+      iris: 0.05
+    
+    # Confidence-based weighting
+    confidence_weighting: true
+    min_modality_confidence: 0.3
+    
+    # MLP fusion (if method is mlp)
+    mlp_fusion:
+      hidden_dims: [256, 128, 64]
+      dropout: 0.3
+      activation: "relu"
+
+# ──────────────────────────────────────
+# VOICE RECOGNITION MODULE
+# ──────────────────────────────────────
+
+voice:
+  enabled: false
+  
+  # Voice feature extraction
+  features:
+    mfcc:
+      enabled: true
+      n_mfcc: 13
+      n_fft: 2048
+      hop_length: 512
+    
+    mel_spectrogram:
+      enabled: true
+      n_mels: 128
+      n_fft: 2048
+      hop_length: 512
+    
+    prosody:
+      enabled: true  # Pitch, energy, duration
+  
+  # Speaker embedding model
+  model:
+    name: "ecapa_tdnn"  # ecapa_tdnn, voxceleb_resnet, x_vector
+    embedding_dim: 256
+    pretrained: true
+    checkpoint: null
+  
+  # Voice activity detection (VAD)
+  vad:
+    enabled: true
+    framework: "silero"  # silero, librosa, pyannote
+    sample_rate: 16000
+    frame_length: 0.02  # 20ms
+    threshold: 0.3
+  
+  # Audio preprocessing
+  audio:
+    sample_rate: 16000
+    duration: 3.0  # seconds
+    channels: 1
+    
+    # Normalization
+    normalize:
+      enabled: true
+      method: "rms"  # rms, peak
+    
+    # Augmentation
+    augmentation:
+      enabled: true
+      types:
+        - "pitch_shift"
+        - "time_stretch"
+        - "background_noise"
+        - "room_impulse"
+  
+  # Recognition
+  recognition:
+    similarity_metric: "cosine"
+    distance_threshold: 0.45
+    top_k: 3
+
+# ──────────────────────────────────────
+# GAIT RECOGNITION MODULE
+# ──────────────────────────────────────
+
+gait:
+  enabled: false
+  
+  # Video/skeleton data
+  input_type: "skeleton"  # video, skeleton, keypoints
+  
+  # Skeleton extraction
+  skeleton_extraction:
+    enabled: true
+    framework: "mediapipe"  # mediapipe, openpose, yolov8_pose
+    
+    # Keypoints to use
+    keypoints_to_use:
+      - "ankle"
+      - "knee"
+      - "hip"
+      - "shoulder"
+      - "elbow"
+      - "wrist"
+  
+  # Gait cycle detection
+  gait_cycle:
+    enabled: true
+    method: "heel_contact"  # heel_contact, zero_crossing
+    cycles_to_use: 3  # Number of complete gait cycles
+  
+  # Temporal modeling
+  temporal:
+    model: "lstm"  # lstm, gru, transformer, 3dcnn
+    sequence_length: 30  # frames per sequence
+    
+    # LSTM config
+    lstm:
+      hidden_size: 256
+      num_layers: 2
+      dropout: 0.3
+    
+    # Transformer config
+    transformer:
+      num_heads: 8
+      num_layers: 4
+      d_model: 256
+  
+  # Gait embedding
+  embedding:
+    dimension: 256
+    normalize: true
+  
+  # Video preprocessing
+  video:
+    fps: 30
+    duration: 3.0  # seconds
+    resolution: [640, 480]
+    
+    # Frame extraction
+    frame_skip: 1
+    
+    # Augmentation
+    augmentation:
+      enabled: true
+      types:
+        - "rotation"
+        - "scale"
+        - "flip"
+        - "perspective"
+  
+  # Recognition
+  recognition:
+    similarity_metric: "cosine"
+    distance_threshold: 0.45
+    top_k: 3
+
+# ──────────────────────────────────────
+# IRIS RECOGNITION MODULE
+# ──────────────────────────────────────
+
+iris:
+  enabled: false
+  
+  # Iris detection and segmentation
+  detection:
+    enabled: true
+    model: "deepirisnet"  # deepirisnet, mobileire, etc.
+    checkpoint: null
+  
+  # Iris normalization
+  normalization:
+    method: "rubber_sheet"  # rubber_sheet, cartesian, polar
+    radial_resolution: 64  # pixels
+    angular_resolution: 360  # degrees
+  
+  # Feature extraction
+  features:
+    method: "gabor"  # gabor, texture, deep_learning
+    
+    gabor:
+      wavelengths: [1, 3, 5, 7]
+      orientations: [0, 45, 90, 135]
+      ksize: 5
+  
+  # Iris template matching
+  matching:
+    metric: "hamming"  # hamming, cosine, euclidean
+    threshold: 0.35
+    top_k: 3
+
+# ──────────────────────────────────────
+# FUSION MODELS
+# ──────────────────────────────────────
+
+fusion_models:
+  # Early fusion (concatenate raw features)
+  early_fusion:
+    enabled: false
+    hidden_dims: [512, 256, 128]
+    dropout: 0.3
+  
+  # Feature-level fusion
+  feature_fusion:
+    enabled: true
+    pooling: "attention"  # attention, max, mean, learnable
+    attention_heads: 8
+  
+  # Decision fusion (late fusion)
+  decision_fusion:
+    enabled: true
+    method: "weighted_sum"  # weighted_sum, voting, mlp
+    
+    # Calibration
+    calibration: true
+    calibration_method: "platt_scaling"  # platt_scaling, temperature_scaling
+  
+  # Score normalization
+  score_normalization:
+    enabled: true
+    method: "z_score"  # z_score, min_max, tanh
+
+# ──────────────────────────────────────
+# MULTIMODAL EVALUATION
+# ──────────────────────────────────────
+
+evaluation:
+  # Datasets
+  datasets:
+    - name: "lfw"
+      modalities: ["face"]
+      enabled: true
+    
+    - name: "voxceleb"
+      modalities: ["voice"]
+      enabled: false
+    
+    - name: "casia_b"
+      modalities: ["gait"]
+      enabled: false
+    
+    - name: "ubiris"
+      modalities: ["iris"]
+      enabled: false
+  
+  # Metrics
+  metrics:
+    - "accuracy"
+    - "auc"
+    - "eer"  # Equal Error Rate
+    - "d_prime"
+    - "gmean"  # Geometric mean
+  
+  # Cross-modal evaluation
+  cross_modal:
+    enabled: true
+    test_modality_combinations: true
+
+# Logging and monitoring
+logging:
+  log_fusion_scores: true
+  log_modality_contributions: true
+  save_fusion_results: true
+  results_dir: "docs/results/multimodal"
+  visualize_fusion: true

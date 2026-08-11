@@ -1,0 +1,341 @@
+# ============================================
+# GAN Configuration - Synthetic Face Generation
+# ============================================
+
+gan:
+  enabled: false  # Set to true to enable synthetic data generation
+  
+  # GAN type
+  type: "stylegan2"  # stylegan2, progressive_gan, biggan
+  pretrained: true
+  pretrained_path: null  # Path to pretrained weights
+
+# ──────────────────────────────────────
+# GENERATOR CONFIGURATION
+# ──────────────────────────────────────
+
+generator:
+  # Architecture
+  architecture: "stylegan2"
+  
+  # Input
+  input_dim: 512  # Latent vector dimension
+  input_type: "normal"  # normal, uniform
+  
+  # Output
+  output_resolution: 1024  # 256, 512, 1024
+  output_channels: 3  # RGB
+  
+  # Layers
+  layers:
+    num_layers: 18
+    style_mixing: true
+    noise_injection: true
+  
+  # Training
+  training:
+    enabled: false  # Set to true to train GAN
+    
+    # Data
+    dataset:
+      root: "data/raw/vggface2"
+      resolution: 1024
+      num_images: 50000  # Subset for training
+      augmentation: true
+    
+    # Optimization
+    optimizer:
+      name: "adam"
+      lr: 0.002
+      betas: [0.0, 0.99]
+    
+    # Training config
+    epochs: 100
+    batch_size: 8
+    accumulation_steps: 4
+    
+    # Progressive growing (if applicable)
+    progressive_growing:
+      enabled: false
+      start_resolution: 4
+      end_resolution: 1024
+      phases: 10
+    
+    # Checkpointing
+    save_interval: 5  # epochs
+    checkpoint_dir: "models/gan/checkpoints"
+
+# ──────────────────────────────────────
+# DISCRIMINATOR CONFIGURATION
+# ──────────────────────────────────────
+
+discriminator:
+  architecture: "stylegan2_discriminator"
+  
+  # Layers
+  num_layers: 8
+  
+  # Training
+  training:
+    enabled: false
+    
+    optimizer:
+      name: "adam"
+      lr: 0.002
+      betas: [0.0, 0.99]
+    
+    # R1 regularization
+    r1_reg:
+      enabled: true
+      gamma: 10.0  # Regularization weight
+      interval: 16  # Apply every N steps
+
+# ──────────────────────────────────────
+# SYNTHETIC DATA GENERATION
+# ──────────────────────────────────────
+
+synthesis:
+  enabled: true  # Generate synthetic faces
+  
+  # Generation settings
+  num_to_generate: 10000  # Number of synthetic faces to create
+  
+  # Sampling
+  sampling:
+    method: "random"  # random, interpolation, class_conditional
+    batch_size: 32
+    num_workers: 4
+  
+  # Conditional generation (if applicable)
+  conditional:
+    enabled: false
+    conditions:
+      - "age"
+      - "gender"
+      - "expression"
+      - "pose"
+      - "lighting"
+  
+  # Diversity
+  diversity:
+    # Ensure diversity in generated samples
+    maximize_diversity: true
+    diversity_metric: "feature_distance"  # feature_distance, cluster_distance
+  
+  # Output
+  output:
+    directory: "data/processed/synthetic_gan"
+    format: "jpg"  # jpg, png
+    resolution: 256  # Save at lower resolution for faster processing
+    
+    # Metadata
+    save_metadata: true
+    metadata_format: "json"
+    save_latent_codes: true
+    save_labels: true
+
+# ──────────────────────────────────────
+# STYLE TRANSFER / DOMAIN ADAPTATION
+# ──────────────────────────────────────
+
+style_transfer:
+  enabled: false
+  
+  # Source and target domains
+  source_domain: "wild"  # Dataset domain to transfer from
+  target_domain: "controlled"  # Domain to transfer to
+  
+  # Style transfer method
+  method: "cyclegan"  # cyclegan, stargan, pix2pix
+  
+  # CycleGAN specific
+  cyclegan:
+    num_cycles: 2
+    lambda_cycle: 10.0
+    lambda_identity: 0.5
+  
+  # StarGAN specific
+  stargan:
+    domains: ["age", "gender", "expression"]
+    lambda_cls: 1.0
+    lambda_rec: 10.0
+
+# ──────────────────────────────────────
+# DATA AUGMENTATION VIA GAN
+# ──────────────────────────────────────
+
+augmentation:
+  enabled: true
+  
+  # Augmentation modes
+  modes:
+    # Mix real and synthetic
+    synthetic_blending:
+      enabled: true
+      real_ratio: 0.7  # 70% real, 30% synthetic
+    
+    # Cutmix with synthetic patches
+    cutmix_synthetic:
+      enabled: true
+      num_patches: 1
+      patch_size: 0.3  # 30% of image
+    
+    # Interpolation between real and synthetic
+    interpolation:
+      enabled: true
+      interpolation_factor: 0.5
+  
+  # Per-class augmentation
+  per_class_augmentation:
+    enabled: true
+    
+    # Oversample minority classes with synthetic
+    min_samples_per_class: 100
+    augmentation_factor: 2.0  # Generate 2x synthetic for each real
+  
+  # Diversity constraints
+  diversity:
+    enabled: true
+    max_similarity: 0.95  # Don't add very similar images
+
+# ──────────────────────────────────────
+# QUALITY CONTROL
+# ──────────────────────────────────────
+
+quality_control:
+  # Artifact detection
+  artifacts:
+    enabled: true
+    detect_artifacts: true
+    artifact_threshold: 0.3  # Reject if artifact score > 0.3
+  
+  # Face detection validation
+  face_detection:
+    enabled: true
+    min_face_size: 0.1  # Minimum 10% of image
+    max_faces: 1  # Only single face
+  
+  # Quality checks
+  quality_checks:
+    enabled: true
+    
+    checks:
+      blur_level: 0.1  # Max laplacian variance
+      illumination: 0.5
+      contrast: 0.3
+  
+  # Realism score (using discriminator)
+  realism_score:
+    enabled: true
+    threshold: 0.6  # Minimum realism score
+    
+    metric: "discriminator_confidence"
+
+# ──────────────────────────────────────
+# EVALUATION ON SYNTHETIC DATA
+# ──────────────────────────────────────
+
+evaluation:
+  enabled: true
+  
+  # Test if model overfits to synthetic data
+  overfitting_test:
+    enabled: true
+    synthetic_to_real_ratio: 0.5
+    test_on_real: true
+  
+  # Cross-domain evaluation
+  cross_domain:
+    enabled: true
+    train_on_synthetic: true
+    test_on_real: true
+  
+  # Fairness evaluation on synthetic
+  fairness:
+    enabled: true
+    test_diversity: true  # Ensure diversity in synthetic data
+
+# ──────────────────────────────────────
+# ADVANCED TECHNIQUES
+# ──────────────────────────────────────
+
+advanced:
+  # Diffusion models
+  diffusion_models:
+    enabled: false
+    model: "stable_diffusion"
+    num_inference_steps: 50
+  
+  # Neural radiance fields (NeRF)
+  nerf:
+    enabled: false
+    num_views: 8
+  
+  # 3D morphable models
+  morphable_models:
+    enabled: false
+    model: "basel_mm"  # Basel Morphable Model
+  
+  # Texture synthesis
+  texture_synthesis:
+    enabled: false
+    texture_size: 512
+  
+  # Animation/video generation
+  animation:
+    enabled: false
+    num_frames: 30
+    fps: 30
+
+# ──────────────────────────────────────
+# LOGGING & MONITORING
+# ──────────────────────────────────────
+
+logging:
+  enabled: true
+  log_dir: "logs/gan"
+  
+  # What to log
+  log_losses: true
+  log_images: true  # Save generated samples
+  log_interval: 100  # iterations
+  
+  # Visualization
+  tensorboard:
+    enabled: true
+    log_dir: "experiments/runs/gan"
+  
+  # Wandb
+  wandb:
+    enabled: false
+    project: "face-generation"
+    entity: null
+    tags: ["gan", "synthetic_data"]
+
+# ──────────────────────────────────────
+# DEPLOYMENT
+# ──────────────────────────────────────
+
+deployment:
+  # Export settings
+  export:
+    enabled: true
+    formats: ["pytorch", "onnx", "tensorrt", "tflite"]
+    output_dir: "models/exports/gan"
+  
+  # Model optimization
+  optimization:
+    quantization:
+      enabled: true
+      dtype: "int8"
+    
+    pruning:
+      enabled: false
+      amount: 0.3
+  
+  # API endpoint for generation
+  api:
+    enabled: false
+    endpoint: "/api/v1/generate"
+    batch_size: 8
+    timeout: 30

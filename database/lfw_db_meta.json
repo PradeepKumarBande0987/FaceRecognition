@@ -1,0 +1,502 @@
+{
+  "Bill_Frist": {
+    "display_name": "Bill Frist",
+    "n_images": 5,
+    "source": "lfw"
+  },
+  "Nancy_Pelosi": {
+    "display_name": "Nancy Pelosi",
+    "n_images": 5,
+    "source": "lfw"
+  },
+  "Sally_Kirkland": {
+    "display_name": "Sally Kirkland",
+    "n_images": 4,
+    "source": "lfw"
+  },
+  "Kjell_Magne_Bondevik": {
+    "display_name": "Kjell Magne Bondevik",
+    "n_images": 3,
+    "source": "lfw"
+  },
+  "Prince_Charles": {
+    "display_name": "Prince Charles",
+    "n_images": 5,
+    "source": "lfw"
+  },
+  "Robert_Zoellick": {
+    "display_name": "Robert Zoellick",
+    "n_images": 5,
+    "source": "lfw"
+  },
+  "Pupi_Avati": {
+    "display_name": "Pupi Avati",
+    "n_images": 4,
+    "source": "lfw"
+  },
+  "Johnny_Tapia": {
+    "display_name": "Johnny Tapia",
+    "n_images": 3,
+    "source": "lfw"
+  },
+  "Heath_Ledger": {
+    "display_name": "Heath Ledger",
+    "n_images": 4,
+    "source": "lfw"
+  },
+  "Lars_Von_Trier": {
+    "display_name": "Lars Von Trier",
+    "n_images": 3,
+    "source": "lfw"
+  },
+  "Katie_Harman": {
+    "display_name": "Katie Harman",
+    "n_images": 3,
+    "source": "lfw"
+  },
+  "Robert_De_Niro": {
+    "display_name": "Robert De Niro",
+    "n_images": 5,
+    "source": "lfw"
+  },
+  "Alexander_Losyukov": {
+    "display_name": "Alexander Losyukov",
+    "n_images": 4,
+    "source": "lfw"
+  },
+  "Stanley_McChrystal": {
+    "display_name": "Stanley McChrystal",
+    "n_images": 3,
+    "source": "lfw"
+  },
+  "Kevin_Spacey": {
+    "display_name": "Kevin Spacey",
+    "n_images": 5,
+    "source": "lfw"
+  },
+  "Coretta_Scott_King": {
+    "display_name": "Coretta Scott King",
+    "n_images": 3,
+    "source": "lfw"
+  },
+  "Horst_Koehler": {
+    "display_name": "Horst Koehler",
+    "n_images": 3,
+    "source": "lfw"
+  },
+  "Queen_Rania": {
+    "display_name": "Queen Rania",
+    "n_images": 5,
+    "source": "lfw"
+  },
+  "Jelena_Dokic": {
+    "display_name": "Jelena Dokic",
+    "n_images": 5,
+    "source": "lfw"
+  },
+  "Diana_Krall": {
+    "display_name": "Diana Krall",
+    "n_images": 5,
+    "source": "lfw"
+  },
+  "Silvio_Berlusconi": {
+    "display_name": "Silvio Berlusconi",
+    "n_images": 5,
+    "source": "lfw"
+  },
+  "Kelvin_Sampson": {
+    "display_name": "Kelvin Sampson",
+    "n_images": 3,
+    "source": "lfw"
+  },
+  "Rachel_Griffiths": {
+    "display_name": "Rachel Griffiths",
+    "n_images": 3,
+    "source": "lfw"
+  },
+  "Mathias_Reichhold": {
+    "display_name": "Mathias Reichhold",
+    "n_images": 3,
+    "source": "lfw"
+  },
+  "Jay_Garner": {
+    "display_name": "Jay Garner",
+    "n_images": 5,
+    "source": "lfw"
+  },
+  "Steven_Spielberg": {
+    "display_name": "Steven Spielberg",
+    "n_images": 5,
+    "source": "lfw"
+  },
+  "Joe_Lieberman": {
+    "display_name": "Joe Lieberman",
+    "n_images": 5,
+    "source": "lfw"
+  },
+  "Jim_Hahn": {
+    "display_name": "Jim Hahn",
+    "n_images": 4,
+    "source": "lfw"
+  },
+  "Sepp_Blatter": {
+    "display_name": "Sepp Blatter",
+    "n_images": 4,
+    "source": "lfw"
+  },
+  "Sebastien_Grosjean": {
+    "display_name": "Sebastien Grosjean",
+    "n_images": 4,
+    "source": "lfw"
+  },
+  "Mike_Krzyzewski": {
+    "display_name": "Mike Krzyzewski",
+    "n_images": 5,
+    "source": "lfw"
+  },
+  "Gloria_Trevi": {
+    "display_name": "Gloria Trevi",
+    "n_images": 4,
+    "source": "lfw"
+  },
+  "Amanda_Bynes": {
+    "display_name": "Amanda Bynes",
+    "n_images": 4,
+    "source": "lfw"
+  },
+  "Xanana_Gusmao": {
+    "display_name": "Xanana Gusmao",
+    "n_images": 5,
+    "source": "lfw"
+  },
+  "Thomas_Fargo": {
+    "display_name": "Thomas Fargo",
+    "n_images": 4,
+    "source": "lfw"
+  },
+  "Stockard_Channing": {
+    "display_name": "Stockard Channing",
+    "n_images": 3,
+    "source": "lfw"
+  },
+  "Naji_Sabri": {
+    "display_name": "Naji Sabri",
+    "n_images": 5,
+    "source": "lfw"
+  },
+  "Elizabeth_Hurley": {
+    "display_name": "Elizabeth Hurley",
+    "n_images": 5,
+    "source": "lfw"
+  },
+  "Rita_Grande": {
+    "display_name": "Rita Grande",
+    "n_images": 3,
+    "source": "lfw"
+  },
+  "Al_Gore": {
+    "display_name": "Al Gore",
+    "n_images": 5,
+    "source": "lfw"
+  },
+  "Martha_Lucia_Ramirez": {
+    "display_name": "Martha Lucia Ramirez",
+    "n_images": 4,
+    "source": "lfw"
+  },
+  "Jeong_Se-hyun": {
+    "display_name": "Jeong Se-hyun",
+    "n_images": 5,
+    "source": "lfw"
+  },
+  "Cherie_Blair": {
+    "display_name": "Cherie Blair",
+    "n_images": 4,
+    "source": "lfw"
+  },
+  "Helen_Clark": {
+    "display_name": "Helen Clark",
+    "n_images": 4,
+    "source": "lfw"
+  },
+  "Debbie_Reynolds": {
+    "display_name": "Debbie Reynolds",
+    "n_images": 4,
+    "source": "lfw"
+  },
+  "Angela_Merkel": {
+    "display_name": "Angela Merkel",
+    "n_images": 5,
+    "source": "lfw"
+  },
+  "Ralf_Schumacher": {
+    "display_name": "Ralf Schumacher",
+    "n_images": 5,
+    "source": "lfw"
+  },
+  "Jodie_Foster": {
+    "display_name": "Jodie Foster",
+    "n_images": 3,
+    "source": "lfw"
+  },
+  "Julianne_Moore": {
+    "display_name": "Julianne Moore",
+    "n_images": 5,
+    "source": "lfw"
+  },
+  "Habib_Rizieq": {
+    "display_name": "Habib Rizieq",
+    "n_images": 5,
+    "source": "lfw"
+  },
+  "Vincent_Brooks": {
+    "display_name": "Vincent Brooks",
+    "n_images": 5,
+    "source": "lfw"
+  },
+  "Lucy_Liu": {
+    "display_name": "Lucy Liu",
+    "n_images": 5,
+    "source": "lfw"
+  },
+  "Iain_Duncan_Smith": {
+    "display_name": "Iain Duncan Smith",
+    "n_images": 4,
+    "source": "lfw"
+  },
+  "Erin_Runnion": {
+    "display_name": "Erin Runnion",
+    "n_images": 4,
+    "source": "lfw"
+  },
+  "Kwon_Yang-sook": {
+    "display_name": "Kwon Yang-sook",
+    "n_images": 3,
+    "source": "lfw"
+  },
+  "George_Lopez": {
+    "display_name": "George Lopez",
+    "n_images": 5,
+    "source": "lfw"
+  },
+  "Tony_Blair": {
+    "display_name": "Tony Blair",
+    "n_images": 5,
+    "source": "lfw"
+  },
+  "Grant_Hackett": {
+    "display_name": "Grant Hackett",
+    "n_images": 5,
+    "source": "lfw"
+  },
+  "John_Abizaid": {
+    "display_name": "John Abizaid",
+    "n_images": 5,
+    "source": "lfw"
+  },
+  "Oprah_Winfrey": {
+    "display_name": "Oprah Winfrey",
+    "n_images": 4,
+    "source": "lfw"
+  },
+  "Marcelo_Ebrard": {
+    "display_name": "Marcelo Ebrard",
+    "n_images": 3,
+    "source": "lfw"
+  },
+  "Susilo_Bambang_Yudhoyono": {
+    "display_name": "Susilo Bambang Yudhoyono",
+    "n_images": 4,
+    "source": "lfw"
+  },
+  "Ludivine_Sagnier": {
+    "display_name": "Ludivine Sagnier",
+    "n_images": 5,
+    "source": "lfw"
+  },
+  "Denzel_Washington": {
+    "display_name": "Denzel Washington",
+    "n_images": 5,
+    "source": "lfw"
+  },
+  "Vanessa_Incontrada": {
+    "display_name": "Vanessa Incontrada",
+    "n_images": 4,
+    "source": "lfw"
+  },
+  "Mikhail_Youzhny": {
+    "display_name": "Mikhail Youzhny",
+    "n_images": 3,
+    "source": "lfw"
+  },
+  "James_Cameron": {
+    "display_name": "James Cameron",
+    "n_images": 3,
+    "source": "lfw"
+  },
+  "Christina_Aguilera": {
+    "display_name": "Christina Aguilera",
+    "n_images": 4,
+    "source": "lfw"
+  },
+  "Faye_Dunaway": {
+    "display_name": "Faye Dunaway",
+    "n_images": 3,
+    "source": "lfw"
+  },
+  "Joan_Laporta": {
+    "display_name": "Joan Laporta",
+    "n_images": 5,
+    "source": "lfw"
+  },
+  "Leslie_Caldwell": {
+    "display_name": "Leslie Caldwell",
+    "n_images": 3,
+    "source": "lfw"
+  },
+  "Alejandro_Toledo": {
+    "display_name": "Alejandro Toledo",
+    "n_images": 5,
+    "source": "lfw"
+  },
+  "Bridget_Fonda": {
+    "display_name": "Bridget Fonda",
+    "n_images": 3,
+    "source": "lfw"
+  },
+  "Elton_John": {
+    "display_name": "Elton John",
+    "n_images": 5,
+    "source": "lfw"
+  },
+  "Joschka_Fischer": {
+    "display_name": "Joschka Fischer",
+    "n_images": 5,
+    "source": "lfw"
+  },
+  "George_Voinovich": {
+    "display_name": "George Voinovich",
+    "n_images": 3,
+    "source": "lfw"
+  },
+  "Queen_Latifah": {
+    "display_name": "Queen Latifah",
+    "n_images": 4,
+    "source": "lfw"
+  },
+  "Daniel_Day-Lewis": {
+    "display_name": "Daniel Day-Lewis",
+    "n_images": 3,
+    "source": "lfw"
+  },
+  "Alvaro_Noboa": {
+    "display_name": "Alvaro Noboa",
+    "n_images": 3,
+    "source": "lfw"
+  },
+  "Andre_Agassi": {
+    "display_name": "Andre Agassi",
+    "n_images": 5,
+    "source": "lfw"
+  },
+  "Hipolito_Mejia": {
+    "display_name": "Hipolito Mejia",
+    "n_images": 4,
+    "source": "lfw"
+  },
+  "Pervez_Musharraf": {
+    "display_name": "Pervez Musharraf",
+    "n_images": 5,
+    "source": "lfw"
+  },
+  "Heather_Mills": {
+    "display_name": "Heather Mills",
+    "n_images": 4,
+    "source": "lfw"
+  },
+  "Queen_Elizabeth_II": {
+    "display_name": "Queen Elizabeth II",
+    "n_images": 5,
+    "source": "lfw"
+  },
+  "Martha_Burk": {
+    "display_name": "Martha Burk",
+    "n_images": 4,
+    "source": "lfw"
+  },
+  "Valery_Giscard_dEstaing": {
+    "display_name": "Valery Giscard dEstaing",
+    "n_images": 5,
+    "source": "lfw"
+  },
+  "Hitomi_Soga": {
+    "display_name": "Hitomi Soga",
+    "n_images": 5,
+    "source": "lfw"
+  },
+  "Russell_Simmons": {
+    "display_name": "Russell Simmons",
+    "n_images": 5,
+    "source": "lfw"
+  },
+  "Bernard_Landry": {
+    "display_name": "Bernard Landry",
+    "n_images": 4,
+    "source": "lfw"
+  },
+  "Daisy_Fuentes": {
+    "display_name": "Daisy Fuentes",
+    "n_images": 4,
+    "source": "lfw"
+  },
+  "Strom_Thurmond": {
+    "display_name": "Strom Thurmond",
+    "n_images": 3,
+    "source": "lfw"
+  },
+  "Jong_Wook_Lee": {
+    "display_name": "Jong Wook Lee",
+    "n_images": 4,
+    "source": "lfw"
+  },
+  "Justine_Pasek": {
+    "display_name": "Justine Pasek",
+    "n_images": 5,
+    "source": "lfw"
+  },
+  "Emmanuelle_Beart": {
+    "display_name": "Emmanuelle Beart",
+    "n_images": 3,
+    "source": "lfw"
+  },
+  "Romano_Prodi": {
+    "display_name": "Romano Prodi",
+    "n_images": 5,
+    "source": "lfw"
+  },
+  "Roberto_Marinho": {
+    "display_name": "Roberto Marinho",
+    "n_images": 3,
+    "source": "lfw"
+  },
+  "Ali_Naimi": {
+    "display_name": "Ali Naimi",
+    "n_images": 5,
+    "source": "lfw"
+  },
+  "Liza_Minnelli": {
+    "display_name": "Liza Minnelli",
+    "n_images": 5,
+    "source": "lfw"
+  },
+  "Jennifer_Aniston": {
+    "display_name": "Jennifer Aniston",
+    "n_images": 5,
+    "source": "lfw"
+  },
+  "Gustavo_Kuerten": {
+    "display_name": "Gustavo Kuerten",
+    "n_images": 3,
+    "source": "lfw"
+  }
+}

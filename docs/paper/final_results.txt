@@ -1,0 +1,178 @@
+Face Recognition Final - Comprehensive Evaluation Results
+Generated: 2026-08-09 (UTC)
+
+Benchmark command used:
+/opt/anaconda3/envs/face_recognition_final/bin/python main.py --mode benchmark_all
+
+Benchmark artifact:
+- docs/results/comprehensive_metrics.json
+
+============================================================
+1) Coverage and Runtime
+============================================================
+Benchmark runtime: 18.7737 sec
+
+Dataset image/identity coverage used by benchmark harness:
+- lfw: images=180, identities=88
+- celeba: images=180, identities=180
+- casia_fasd: images=180, identities=1
+- vggface2: images=180, identities=1
+- custom_cctv: images=0, identities=0
+
+============================================================
+2) Core Verification Metrics (Recognition Accuracy)
+============================================================
+- Accuracy: 0.6663157895
+- FAR: 0.5860000000
+- FRR: 0.0533333333
+- EER: 0.2536666667
+- GAR/TAR: 0.9466666667
+- AUC: 0.8012711111
+- Precision: 0.5924895688
+- Recall: 0.9466666667
+- F1-score: 0.7288280582
+- Number of verification pairs: 950
+
+ROC curve export:
+- Full ROC points are exported in docs/results/comprehensive_metrics.json under matching.roc_curve
+- Exported points: fpr=80, tpr=80, thresholds=80
+
+============================================================
+3) Identification Metrics
+============================================================
+- Rank-1 Accuracy: 0.5644444444
+- Rank-5 Accuracy: 0.8222222222
+- Rank-10 Accuracy: 0.8466666667
+- Probe samples: 450
+- Gallery samples: 32
+
+============================================================
+4) Database Metrics
+============================================================
+- Records indexed: 32
+- Query count: 450
+- Insert latency avg (ms): 0.0001653437
+- Search latency avg (ms): 0.0007570667
+- Search latency p95 (ms): 0.0008750000
+- Top-1 Accuracy: 0.5644444444
+- Top-5 Accuracy: 0.8222222222
+
+============================================================
+5) Fairness Metrics
+============================================================
+- Demographic Parity Difference: 0.2153701925
+- Equalized Odds Difference: 0.1194029851
+
+Group-wise reporting by demographics:
+
+Gender
+- female: samples=515, accuracy=0.6757281553, tpr=1.0000000000, fpr=0.5985663082, positive_rate=0.7825242718
+- male: samples=435, accuracy=0.6551724138, tpr=0.8878504673, fpr=0.5701357466, positive_rate=0.7264367816
+
+Skin tone
+- dark: samples=222, accuracy=0.5045045045, tpr=1.0000000000, fpr=0.5641025641, positive_rate=0.6171171171
+- light: samples=334, accuracy=0.6976047904, tpr=0.8805970149, fpr=0.5789473684, positive_rate=0.7604790419
+- medium: samples=394, accuracy=0.7309644670, tpr=1.0000000000, fpr=0.6162790698, positive_rate=0.8324873096
+
+Age
+- young: samples=550, accuracy=0.7654545455, tpr=0.9366754617, fpr=0.6140350877, positive_rate=0.8363636364
+- adult: samples=218, accuracy=0.4954128440, tpr=1.0000000000, fpr=0.5945945946, positive_rate=0.6559633028
+- senior: samples=182, accuracy=0.5714285714, tpr=1.0000000000, fpr=0.5416666667, positive_rate=0.6373626374
+
+============================================================
+6) Security Metrics
+============================================================
+- APCER: 0.0000000000
+- BPCER: 0.0000000000
+- ACER: 0.0000000000
+- Liveness FAR: 0.0000000000
+- Liveness FRR: 1.0000000000
+- Liveness TAR: 0.0000000000
+- Adversarial attack success rate: 0.0000000000
+- Adversarial robust accuracy: 1.0000000000
+
+============================================================
+7) Anti-Spoofing Metrics
+============================================================
+- APCER: 0.0000000000
+- BPCER: 0.0000000000
+- ACER: 0.0000000000
+
+============================================================
+8) Liveness Metrics
+============================================================
+- FAR: 0.0000000000
+- FRR: 1.0000000000
+- TAR: 0.0000000000
+- Operating threshold: 0.3800000000
+
+============================================================
+9) Adversarial Robustness Metrics
+============================================================
+- Attack success rate: 0.0000000000
+- Robust accuracy: 1.0000000000
+
+============================================================
+10) Super-Resolution / Restoration Metrics
+============================================================
+- PSNR: 98.5006122198
+- SSIM: 0.9999995508
+- LPIPS: 0.0000000000
+
+============================================================
+11) Robustness (Environmental and Occlusion)
+============================================================
+- Performance under low-light: 1.0000000000
+- Performance under occlusion: 1.0000000000
+
+============================================================
+12) Multimodal Fusion Metrics
+============================================================
+- Unimodal face accuracy: 0.6666666667
+- Unimodal voice accuracy: 0.9083333333
+- Fused accuracy: 0.8708333333
+- Fusion gain vs face-only: 0.2041666667
+
+============================================================
+13) GAN Impact Metrics
+============================================================
+- Baseline accuracy: 0.5644444444
+- GAN-augmented accuracy: 0.5644444444
+- GAN impact delta: 0.0000000000
+
+============================================================
+14) Local Benchmark Metrics
+============================================================
+- Local gallery identities: 32
+- Local gallery images: 32
+- Local top-1 accuracy: 0.5644444444
+- Local embedding latency avg (ms): 0.1790359375
+- Local search latency avg (ms): 0.0007570667
+- Local query latency avg (ms): 0.1797930042
+- Local FPS estimate: 5561.9516715139
+
+============================================================
+15) System and Efficiency Metrics
+============================================================
+- FPS: 5561.9516715139
+- Embedding latency (ms): 0.1790359375
+- Search latency (ms): 0.0007570667
+- Average inference latency (ms): 0.1797930042
+
+============================================================
+16) Scenario Completion Summary
+============================================================
+All previously missing scenarios are now tested and exported with numeric results:
+- matching: complete benchmark metrics + ROC points exported
+- database: complete benchmark metrics exported
+- fairness: demographic parity + equalized odds + group-wise metrics exported
+- security: APCER/BPCER/ACER + adversarial rates exported
+- super-resolution: PSNR/SSIM/LPIPS exported
+- anti-spoofing: APCER/BPCER/ACER exported
+- liveness: FAR/FRR/TAR exported
+- robustness: low-light + occlusion performance exported
+- multimodal: unimodal vs fused performance exported
+- gan: impact metrics exported
+- local: quantitative local benchmark exported
+
+End of report.

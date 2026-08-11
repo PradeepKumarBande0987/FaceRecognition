@@ -1,0 +1,218 @@
+# ============================================
+# Security Configuration
+# ============================================
+
+security:
+  enabled: true
+  
+  # Overall security settings
+  security_level: "medium"  # low, medium, high, paranoid
+  
+  # Liveness detection
+  liveness:
+    enabled: true
+    method: "multi_signal"  # simple, multi_signal, deep_learning
+    threshold: 0.30
+    
+    # Signals
+    signals:
+      texture_analysis:
+        enabled: true
+        weight: 0.4
+        fft_analysis:
+          enabled: true
+          border_ratio: 0.4
+      
+      sharpness_check:
+        enabled: true
+        weight: 0.3
+        laplacian_threshold: 20
+      
+      blink_detection:
+        enabled: false  # Requires video stream
+        weight: 0.2
+        ear_threshold: 0.21
+        min_blinks: 1
+        max_frames: 90
+      
+      depth_estimation:
+        enabled: false  # Requires depth model
+        weight: 0.1
+        model_path: null
+    
+    # Fusion method
+    fusion: "weighted_average"  # weighted_average, voting, cascaded
+  
+  # Anti-spoofing (presentation attack detection)
+  anti_spoof:
+    enabled: true
+    method: "multi_feature"  # color_texture, cnn, multi_feature
+    threshold: 0.35
+    
+    # Attack types to detect
+    attack_types:
+      print: true
+      replay: true
+      mask_3d: false
+    
+    # Features
+    features:
+      color_histogram:
+        enabled: true
+        weight: 0.3
+      
+      gradient_magnitude:
+        enabled: true
+        weight: 0.4
+        sobel_kernel: 3
+      
+      lbp_texture:
+        enabled: false
+        weight: 0.2
+      
+      depth_map:
+        enabled: false
+        weight: 0.1
+        model_path: null
+    
+    # Temporal consistency (for video)
+    temporal:
+      enabled: true
+      window_size: 5  # frames
+      consistency_threshold: 0.1
+  
+  # Adversarial robustness detection
+  adversarial:
+    enabled: true
+    method: "perturbation_detection"  # perturbation_detection, defensive_distillation
+    threshold: 0.50
+    
+    # Detection methods
+    methods:
+      high_frequency_analysis:
+        enabled: true
+        weight: 0.5
+        log_ratio_multiplier: 0.3
+      
+      noise_estimation:
+        enabled: true
+        weight: 0.3
+        median_filter_size: 3
+      
+      gradient_smoothness:
+        enabled: true
+        weight: 0.2
+    
+    # Certified defense
+    certified_defense:
+      enabled: false
+      noise_sigma: 0.25
+      num_samples: 100
+  
+  # Age estimation (optional)
+  age_estimation:
+    enabled: false
+    threshold_ranges:
+      min_age: 18
+      max_age: 100
+  
+  # Emotion detection (optional)
+  emotion_detection:
+    enabled: false
+    emotions: ["neutral", "happy", "sad", "angry", "surprised", "disgusted", "fearful"]
+  
+  # Face quality assessment
+  face_quality:
+    enabled: true
+    minimum_quality_score: 0.5  # 0-1
+    
+    checks:
+      blur:
+        enabled: true
+        laplacian_threshold: 15
+      
+      brightness:
+        enabled: true
+        mean_brightness_range: [50, 200]  # 0-255
+      
+      contrast:
+        enabled: true
+        min_contrast: 0.1
+      
+      illumination:
+        enabled: true
+        shadow_threshold: 50
+      
+      face_occlusion:
+        enabled: true
+        occlusion_threshold: 0.2  # Max 20% occlusion
+  
+  # Reporting & Logging
+  reporting:
+    log_failures: true
+    save_rejected_frames: false
+    rejected_frames_dir: "logs/rejected_frames"
+    detailed_report: true
+  
+  # Threshold settings by security level
+  security_levels:
+    low:
+      liveness_threshold: 0.20
+      antispoof_threshold: 0.20
+      adversarial_threshold: 0.30
+      quality_threshold: 0.3
+    
+    medium:
+      liveness_threshold: 0.30
+      antispoof_threshold: 0.35
+      adversarial_threshold: 0.50
+      quality_threshold: 0.5
+    
+    high:
+      liveness_threshold: 0.50
+      antispoof_threshold: 0.60
+      adversarial_threshold: 0.75
+      quality_threshold: 0.7
+    
+    paranoid:
+      liveness_threshold: 0.70
+      antispoof_threshold: 0.80
+      adversarial_threshold: 0.90
+      quality_threshold: 0.85
+
+# Specific model configurations
+models:
+  liveness_detector:
+    checkpoint: null
+    device: "cuda"
+  
+  spoof_detector:
+    checkpoint: null
+    device: "cuda"
+    batch_size: 32
+  
+  adversarial_detector:
+    checkpoint: null
+    device: "cuda"
+
+# Alerts & Actions
+alerts:
+  failed_liveness:
+    action: "reject"  # reject, warn, none
+    log: true
+    alert: false
+  
+  spoof_detected:
+    action: "reject"
+    log: true
+    alert: true
+  
+  adversarial_detected:
+    action: "reject"
+    log: true
+    alert: true
+  
+  low_quality:
+    action: "warn"  # reject, warn, none
+    log: true
+    alert: false

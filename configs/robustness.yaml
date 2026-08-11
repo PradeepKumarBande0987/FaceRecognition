@@ -1,0 +1,231 @@
+# ============================================
+# Robustness Testing Configuration
+# ============================================
+
+robustness:
+  enabled: true
+  
+  # Test categories
+  test_categories:
+    adversarial: true
+    corruption: true
+    occlusion: true
+    background: true
+    illumination: true
+    scale_variation: true
+    resolution: true
+
+# Adversarial attacks
+adversarial_attacks:
+  # FGSM - Fast Gradient Sign Method
+  fgsm:
+    enabled: true
+    epsilon: 0.03  # 8/255
+    iterations: 1
+  
+  # PGD - Projected Gradient Descent
+  pgd:
+    enabled: true
+    epsilon: 0.03  # 8/255
+    alpha: 0.008  # 2/255
+    steps: 20
+    random_start: true
+  
+  # C&W - Carlini-Wagner
+  carlini_wagner:
+    enabled: false
+    learning_rate: 0.01
+    max_iterations: 100
+    confidence: 0
+    target_image: null
+  
+  # Patch-based attacks
+  patch_attack:
+    enabled: false
+    patch_size: [32, 32]
+    num_patches: 1
+    learning_rate: 0.01
+    iterations: 100
+  
+  # Spatial attacks (rotation, translation)
+  spatial_attacks:
+    enabled: true
+    rotation_degrees: [-30, -15, 0, 15, 30]
+    translation_pixels: [-50, -25, 0, 25, 50]
+    scale_factors: [0.7, 0.85, 1.0, 1.15, 1.3]
+
+# Image corruptions
+corruptions:
+  # Noise
+  gaussian_noise:
+    enabled: true
+    severity_levels: [1, 2, 3, 4, 5]  # 1=mild, 5=severe
+    noise_std: [0.01, 0.02, 0.05, 0.1, 0.2]
+  
+  salt_pepper_noise:
+    enabled: true
+    severity_levels: [1, 2, 3, 4, 5]
+    noise_amount: [0.01, 0.02, 0.05, 0.1, 0.2]
+  
+  # Blur
+  gaussian_blur:
+    enabled: true
+    severity_levels: [1, 2, 3, 4, 5]
+    kernel_sizes: [3, 5, 7, 9, 11]
+  
+  motion_blur:
+    enabled: true
+    severity_levels: [1, 2, 3, 4, 5]
+    kernel_sizes: [5, 9, 13, 17, 21]
+  
+  # Weather
+  rain:
+    enabled: true
+    severity_levels: [1, 2, 3, 4, 5]
+    drop_probability: [0.02, 0.05, 0.1, 0.15, 0.2]
+  
+  fog:
+    enabled: true
+    severity_levels: [1, 2, 3, 4, 5]
+    fog_density: [0.1, 0.2, 0.4, 0.6, 0.8]
+  
+  snow:
+    enabled: true
+    severity_levels: [1, 2, 3, 4, 5]
+  
+  # Compression
+  jpeg_compression:
+    enabled: true
+    severity_levels: [1, 2, 3, 4, 5]
+    quality: [80, 70, 50, 30, 10]
+  
+  # Brightness/Contrast
+  brightness:
+    enabled: true
+    severity_levels: [1, 2, 3, 4, 5]
+    factor: [0.7, 0.8, 1.0, 1.2, 1.3]
+  
+  contrast:
+    enabled: true
+    severity_levels: [1, 2, 3, 4, 5]
+    factor: [0.6, 0.8, 1.0, 1.2, 1.5]
+  
+  # Color shift
+  color_jitter:
+    enabled: true
+    severity_levels: [1, 2, 3, 4, 5]
+    brightness: [0.1, 0.2, 0.3, 0.4, 0.5]
+    contrast: [0.1, 0.2, 0.3, 0.4, 0.5]
+    saturation: [0.1, 0.2, 0.3, 0.4, 0.5]
+    hue: [0.05, 0.1, 0.15, 0.2, 0.25]
+
+# Occlusion tests
+occlusion:
+  enabled: true
+  types:
+    sunglasses: true
+    mask: true
+    scarf: true
+    hand_cover: true
+    partial_face: true
+  
+  occlusion_ratios: [0.1, 0.2, 0.3, 0.4, 0.5]  # 10-50% occlusion
+
+# Background variations
+background:
+  enabled: true
+  types:
+    uniform_bg: true
+    complex_bg: true
+    face_swap_bg: true
+  
+  blur_levels: [0, 5, 10, 20]
+
+# Illumination variations
+illumination:
+  enabled: true
+  test_types:
+    side_lighting: true
+    backlighting: true
+    underexposure: true
+    overexposure: true
+  
+  intensity_levels: [0.5, 0.7, 1.0, 1.3, 1.5]
+
+# Low resolution / upsampling
+resolution:
+  enabled: true
+  
+  downsampling:
+    enabled: true
+    factors: [2, 4, 8, 16]  # Downsampling factors
+  
+  upsampling_methods:
+    - "bilinear"
+    - "bicubic"
+    - "lanczos"
+    - "sr_super_resolution"  # Super-resolution models
+
+# Scale variation
+scale:
+  enabled: true
+  scales: [0.5, 0.7, 0.9, 1.0, 1.1, 1.3, 1.5, 2.0]
+
+# Performance metrics
+metrics:
+  threshold_independent:
+    - "auc"
+    - "rank_n"  # Rank-1, Rank-5, etc.
+  
+  threshold_dependent:
+    - "tpr_at_fpr"
+    - "verification_accuracy"
+    - "identification_accuracy"
+  
+  robustness_specific:
+    - "performance_drop"  # Drop compared to clean images
+    - "failure_rate"
+    - "degradation_curve"
+
+# Evaluation settings
+evaluation:
+  batch_size: 32
+  num_workers: 4
+  
+  datasets:
+    - name: "lfw"
+      enabled: true
+      root: "data/raw/lfw"
+    
+    - name: "celebA"
+      enabled: true
+      root: "data/raw/celeba"
+    
+    - name: "vggface2"
+      enabled: false
+      root: "data/raw/vggface2"
+  
+  # Reporting
+  save_results: true
+  results_dir: "docs/results/robustness"
+  generate_plots: true
+  comparison_plots: true
+
+# Advanced settings
+advanced:
+  # Ensemble robustness
+  ensemble_evaluation: false
+  ensemble_size: 5
+  
+  # Certified robustness
+  certified_robustness:
+    enabled: false
+    noise_levels: [0.1, 0.25, 0.5]
+    num_samples: 100
+  
+  # Adaptive attacks
+  adaptive_attacks: false
+  
+  # Model interpretability
+  save_attention_maps: false
+  save_gradients: false

@@ -1,0 +1,416 @@
+# ============================================
+# Evaluation Configuration
+# ============================================
+
+evaluation:
+  # General settings
+  verbose: true
+  save_results: true
+  results_dir: "docs/results/evaluation"
+  
+  # Device
+  device: "cuda"  # cuda, cpu, mps
+  batch_size: 64
+  num_workers: 4
+  pin_memory: true
+
+# ──────────────────────────────────────
+# FACE RECOGNITION EVALUATION
+# ──────────────────────────────────────
+
+recognition:
+  enabled: true
+  
+  # Evaluation protocols
+  protocols:
+    # LFW - Labeled Faces in the Wild
+    lfw:
+      enabled: true
+      root: "data/raw/lfw"
+      num_identities: 5749
+      num_images: 13233
+      num_pairs: 6000
+      
+      # Protocol
+      protocol: "10fold"  # 10fold, unrestricted, restricted
+      test_pairs_file: "data/raw/lfw/pairs.txt"
+      
+      # Metrics
+      metrics:
+        - "accuracy"
+        - "auc"
+        - "eer"
+        - "tpr_at_fpr"
+        - "threshold"
+      
+      # Thresholds to test
+      thresholds: "auto"  # auto, or list of values
+      fpr_points: [0.001, 0.01, 0.1]  # For TPR@FPR
+    
+    # VGGFace2 - Verification pairs
+    vggface2:
+      enabled: false
+      root: "data/raw/vggface2"
+      num_identities: 9131
+      num_images: 3141890
+      
+      # Verification protocol
+      test_pairs: "vggface2_verification_pairs.txt"
+      
+      metrics:
+        - "accuracy"
+        - "auc"
+        - "eer"
+    
+    # Identification benchmark
+    identification:
+      enabled: true
+      
+      # Galleries
+      galleries:
+        - name: "lfw_subset"
+          root: "data/raw/lfw"
+          size: 1000  # Use subset for speed
+        
+        - name: "vggface2_subset"
+          root: "data/raw/vggface2"
+          size: 500
+      
+      # Probes
+      probes:
+        - name: "lfw_probes"
+          root: "data/raw/lfw"
+          size: 500
+      
+      # Metrics
+      metrics:
+        - "rank_1_accuracy"
+        - "rank_5_accuracy"
+        - "rank_10_accuracy"
+        - "mean_average_precision"
+        - "cumulative_match_curve"
+
+# ──────────────────────────────────────
+# DATASET EVALUATION
+# ──────────────────────────────────────
+
+dataset_evaluation:
+  # Ablation studies
+  ablations:
+    enabled: true
+    
+    ablation_studies:
+      - name: "backbone_comparison"
+        backbones: ["resnet50", "resnet100", "efficientnet", "mobilefacenet"]
+      
+      - name: "loss_function_comparison"
+        loss_functions: ["arcface", "cosface", "vplanet", "triplet"]
+      
+      - name: "embedding_dim_comparison"
+        embedding_dims: [128, 256, 512, 1024]
+      
+      - name: "data_augmentation_comparison"
+        augmentation_levels: ["none", "light", "medium", "heavy"]
+  
+  # Cross-dataset generalization
+  generalization:
+    enabled: true
+    
+    train_dataset: "vggface2"
+    test_datasets:
+      - "lfw"
+      - "celeba"
+      - "rfw"
+      - "bupt"
+  
+  # Domain adaptation
+  domain_adaptation:
+    enabled: false
+    
+    source_domain: "vggface2"
+    target_domains:
+      - "lfw"
+      - "age_gap"
+      - "morph_attack"
+
+# ──────────────────────────────────────
+# FAIRNESS EVALUATION
+# ──────────────────────────────────────
+
+fairness:
+  enabled: true
+  
+  # Demographic attributes
+  attributes:
+    gender:
+      enabled: true
+      groups: ["male", "female"]
+    
+    race:
+      enabled: true
+      groups: ["caucasian", "african", "asian", "indian"]
+    
+    age:
+      enabled: true
+      groups: ["young", "middle", "old"]
+    
+    skin_tone:
+      enabled: true
+      groups: ["light", "medium", "dark"]
+  
+  # Fairness metrics
+  metrics:
+    performance_parity:
+      enabled: true
+      tolerance: 0.05
+    
+    equalized_odds:
+      enabled: true
+      tolerance: 0.05
+    
+    predictive_parity:
+      enabled: true
+      tolerance: 0.05
+    
+    disparate_impact:
+      enabled: true
+      threshold: 0.8  # 80% rule
+  
+  # Datasets for fairness evaluation
+  datasets:
+    - name: "rfw"
+      root: "data/raw/rfw"
+      enabled: true
+    
+    - name: "bupt"
+      root: "data/raw/bupt_balancedface"
+      enabled: true
+    
+    - name: "celeba"
+      root: "data/raw/celeba"
+      enabled: true
+
+# ──────────────────────────────────────
+# SECURITY EVALUATION
+# ──────────────────────────────────────
+
+security:
+  enabled: true
+  
+  # Attack simulation
+  attacks:
+    presentation_attacks:
+      enabled: true
+      types: ["print", "replay", "mask_3d"]
+      datasets:
+        - name: "casia_fasd"
+          root: "data/raw/casia_fasd"
+    
+    adversarial_attacks:
+      enabled: true
+      types: ["fgsm", "pgd", "carlini_wagner"]
+      epsilon: 0.03
+  
+  # Liveness detection evaluation
+  liveness:
+    enabled: true
+    test_live_samples: true
+    test_spoof_samples: true
+    
+    metrics:
+      - "tpr"
+      - "fpr"
+      - "eer"
+      - "apcer"  # Attack Presentation Classification Error Rate
+      - "bpcer"  # Bona Fide Presentation Classification Error Rate
+  
+  # Anti-spoofing evaluation
+  anti_spoof:
+    enabled: true
+    threshold: 0.5
+    
+    metrics:
+      - "accuracy"
+      - "auc"
+      - "eer"
+      - "apcer"
+      - "bpcer"
+
+# ──────────────────────────────────────
+# PERFORMANCE EVALUATION
+# ──────────────────────────────────────
+
+performance:
+  enabled: true
+  
+  # Inference speed
+  inference_speed:
+    enabled: true
+    num_samples: 1000
+    
+    metrics:
+      - "latency_ms"
+      - "throughput_fps"
+      - "fps_per_core"
+  
+  # Memory usage
+  memory:
+    enabled: true
+    
+    metrics:
+      - "peak_memory_mb"
+      - "average_memory_mb"
+      - "memory_per_batch"
+      - "gpu_memory_mb"
+  
+  # Computational cost
+  computational:
+    enabled: true
+    
+    metrics:
+      - "flops"
+      - "parameters"
+      - "energy_consumption"
+  
+  # Device-specific evaluation
+  devices:
+    - name: "rtx_4090"
+      enabled: false
+    
+    - name: "rtx_3080"
+      enabled: false
+    
+    - name: "a100"
+      enabled: false
+    
+    - name: "raspberry_pi"
+      enabled: false
+    
+    - name: "jetson_nano"
+      enabled: false
+
+# ──────────────────────────────────────
+# QUALITY EVALUATION
+# ──────────────────────────────────────
+
+quality:
+  enabled: true
+  
+  # Image quality metrics
+  image_quality:
+    enabled: true
+    
+    metrics:
+      - "sharpness"
+      - "brightness"
+      - "contrast"
+      - "noise_level"
+      - "illumination"
+  
+  # Face quality metrics
+  face_quality:
+    enabled: true
+    
+    metrics:
+      - "face_size"
+      - "occlusion_level"
+      - "pose_variation"
+      - "expression_variation"
+
+# ──────────────────────────────────────
+# METRICS & STATISTICS
+# ──────────────────────────────────────
+
+metrics:
+  # Verification metrics (1:1 matching)
+  verification:
+    - "accuracy"
+    - "auc"
+    - "eer"
+    - "tpr_at_fpr"
+    - "fpr_at_tpr"
+    - "d_prime"
+    - "gmean"
+  
+  # Identification metrics (1:N matching)
+  identification:
+    - "rank_1_accuracy"
+    - "rank_5_accuracy"
+    - "rank_10_accuracy"
+    - "mean_average_precision"
+    - "cumulative_match_curve"
+  
+  # Fairness metrics
+  fairness:
+    - "performance_parity"
+    - "equalized_odds"
+    - "predictive_parity"
+    - "demographic_parity"
+    - "disparate_impact_ratio"
+  
+  # Robustness metrics
+  robustness:
+    - "performance_drop"
+    - "failure_rate"
+    - "degradation_rate"
+
+# ──────────────────────────────────────
+# REPORTING & VISUALIZATION
+# ──────────────────────────────────────
+
+reporting:
+  # Report format
+  format: ["json", "csv", "html", "pdf"]  # Multiple formats
+  
+  # HTML report
+  html_report:
+    enabled: true
+    template: "default"
+    include_plots: true
+    include_tables: true
+    include_details: true
+  
+  # PDF report
+  pdf_report:
+    enabled: true
+    page_size: "A4"
+    include_figures: true
+    include_appendix: true
+  
+  # CSV export
+  csv_export:
+    enabled: true
+    separate_files: true
+  
+  # Plots & Visualization
+  plots:
+    enabled: true
+    types:
+      - "roc_curve"
+      - "det_curve"
+      - "confusion_matrix"
+      - "rank_n_curve"
+      - "fairness_comparison"
+      - "robustness_curves"
+  
+  # Comparison plots
+  comparison_plots:
+    enabled: true
+    compare_backbones: true
+    compare_loss_functions: true
+    compare_datasets: true
+
+# ──────────────────────────────────────
+# LOGGING & CACHE
+# ──────────────────────────────────────
+
+logging:
+  level: "INFO"
+  log_file: "logs/evaluation/eval.log"
+  verbose: false
+
+caching:
+  enabled: true
+  cache_dir: "cache/evaluation"
+  cache_embeddings: true
+  cache_detections: true

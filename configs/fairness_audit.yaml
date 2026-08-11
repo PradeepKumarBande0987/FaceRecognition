@@ -1,12 +1,101 @@
+# ============================================
+# Fairness Audit and Mitigation Configuration
+# ============================================
+
+project:
+  name: "FaceRecognitionFinal-Fairness"
+  version: "1.0.0"
+
+experiment:
+  name: "fairness_audit_comprehensive"
+
 fairness:
-  audit_only: true
+  enabled: true
+  
+  # Demographic attributes to audit
+  attributes:
+    gender:
+      enabled: true
+      categories: ["male", "female", "other"]
+    
+    race:
+      enabled: true
+      categories: ["caucasian", "african", "asian", "indian"]
+    
+    age_group:
+      enabled: true
+      categories: ["0-18", "19-30", "31-45", "46-60", "60+"]
+    
+    skin_tone:
+      enabled: true
+      categories: ["light", "medium", "dark"]
+      classifier: "fitzpatrick_scale"
+
+  # Datasets for fairness evaluation
+  datasets:
+    - name: "RFW"
+      root: "data/raw/rfw"
+      enabled: true
+    
+    - name: "BUPT"
+      root: "data/raw/bupt_balancedface"
+      enabled: true
+    
+    - name: "CelebA"
+      root: "data/raw/celeba"
+      attributes_file: "list_attr_celeba.txt"
+      enabled: true
+
+  # Fairness metrics
   metrics:
-    - fpr
-    - fnr
-    - demographic_parity
-    - equal_opportunity
-datasets:
-  groups:
-    - gender
-    - age
-    - skin_tone
+    performance_parity:
+      enabled: true
+      tolerance: 0.05  # 5% difference threshold
+    
+    equalized_odds:
+      enabled: true
+      tolerance: 0.05
+    
+    predictive_parity:
+      enabled: true
+      tolerance: 0.05
+    
+    calibration:
+      enabled: true
+      n_bins: 10
+    
+    individual_fairness:
+      enabled: true
+      consistency_radius: 0.1
+
+  # Bias mitigation strategies
+  mitigation:
+    enabled: true
+    
+    pre_processing:
+      enabled: false
+      method: "reweighting"  # reweighting, resampling, synthetic_generation
+    
+    in_processing:
+      enabled: true
+      method: "adversarial_debiasing"
+      lambda_adv: 1.0
+      discriminator_lr: 0.001
+    
+    post_processing:
+      enabled: false
+      method: "threshold_optimization"
+      objective: "equalized_odds"  # demographic_parity, equalized_odds
+
+  # Reporting
+  reporting:
+    generate_report: true
+    include_visualizations: true
+    output_format: ["html", "pdf", "json"]
+    output_dir: "docs/results/fairness"
+
+  # Interventions
+  interventions:
+    flag_threshold: 0.1  # Flag if fairness gap exceeds this
+    stop_training: false
+    automatic_mitigation: true
